@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>VoiceJJ - Um app simples de voz</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" href="/css/main.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+</head>
+<body>
+    <center>
+        <h1 class="grande">Login</h1>
+        <p><font size="72px" >Insira o seu usuario </font></p>
+        <input type="text" id="usuario">
+        <a class="btn-inicio" onclick="proximo()">Pronto</a>
+    </center>
+<script>
+    $("input").val("");
+    function proximo() {
+        var user = $("#usuario").val();
+        window.location.href = "chat.html?usuario="+ user;
+    }
+</script>
+</body>
+</html>

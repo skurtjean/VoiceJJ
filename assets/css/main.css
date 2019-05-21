@@ -1,0 +1,54 @@
+font-face {
+    font-family: 'OpenSans';
+    src: url('/css/OpenSans-Light.ttf');
+}
+body {
+	background-color: #00cc99;
+	color: white;
+	font-family: 'OpenSans';
+}
+.grande {
+	font-size: 72px;
+	text-align: center;
+	color: #FFFFFF;
+	text-shadow: 2px 2px #000000
+}
+.btn-inicio {
+	color: #FFFFFF;
+	background-color: #3CBC8D;
+	border: solid #FFFFFF 3px;
+	border-radius: 4px;
+	padding-top: 10px;
+	padding-bottom: 8px;
+	padding-left: 15px;
+	padding-right: 15px;
+	transition: background-color 0.5s;
+}
+.btn-inicio:hover {
+	cursor: pointer;
+	background-color: rgb(130, 238, 198);
+}
+:link {
+	color: rgb(129, 187, 117);
+	text-decoration: none;
+}
+input[type=text], input[type=password] {
+	background-color: #3CBC8D;
+	color: white;
+	border-color: #FFFFFF;
+	border: solid 2px;
+	border-radius: 4px;
+	padding-top: 10px;
+	padding-bottom: 8px;
+	padding-left: 15px;
+	padding-right: 15px;
+	margin-right: 10px;
+	transition: background-color 0.5s;
+}
+input[type=text]:hover, input[type=password]:hover {
+	background-color: rgb(92, 190, 154);
+}
+p {
+color: #ffffff;
+}
+

@@ -1,0 +1,295 @@
+<html lang="pt-br">
+
+<head>
+  <meta charset="UTF-8">
+  <title>VoiceJJ</title>
+  <script src="https://cdn.jsdelivr.net/npm/peerjs@0.3.20/dist/peer.min.js"></script>
+  <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+  <script src="//www.WebRTC-Experiment.com/RecordRTC.js"></script>
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css"
+    integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
+  <link rel="stylesheet" type="text/css" href="/css/main.css">
+  <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+  <script src="/js/app.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
+</head>
+
+<body>
+  <audio id="audioCall" style="visibility: hidden" controls></audio>
+  <center>
+    <p id="texto">
+      <font size="72">Não conectado</font>
+    </p>
+    <div style="visibility: hidden" id="pos-nick">
+      <br />
+      <p>Nome de usuario do parceiro</p>
+      <input type="text" id="to">
+      <a class="btn-inicio" id="start-call"><i class="fas fa-phone fa-rotate-180"></i></a>
+    </div>
+    <p id="andamento"></p>
+    <br />
+    <div id="call-controls" style="visibility: hidden">
+      <a class="btn-inicio" id="mutecall"><i class="fas fa-microphone-slash"></i></a>
+      <a class="btn-inicio" id="silentaudio"><i class="fas fa-volume-up"></i></a>
+      <br>
+      <br>
+    </div>
+    <br>
+    <a class="btn-inicio btn-final" id="end-call" style="visibility: hidden" href="login.html"><i
+        class="fas fa-phone-slash fa-rotate-180"></i></a>
+      <div id="container-chat" hidden>
+        <div id="chat-frame-box">
+          <div id="messages" class="talking-area">
+          </div>
+          <div class="panel-text">
+              <!--<p class="typing" v-if="typing">{{ receiver.name }} está digitando...</p>-->
+              <textarea id="message" placeholder="Enviar mensagem..." ></textarea>
+              <button onclick="sendMessage()">Enviar Mensagem</button>
+          </div>
+        </div>
+      </div>
+  </center>
+</body>
+
+<script>
+  $("input").val("");
+  var socket = io('vps13171.publiccloud.com.br:9001');
+
+  // script pra pegar parametros da url
+  function getAllUrlParams(url) {
+
+    // get query string from url (optional) or window
+    var queryString = url ? url.split('?')[1] : window.location.search.slice(1);
+
+    // we'll store the parameters here
+    var obj = {};
+
+    // if query string exists
+    if (queryString) {
+
+      // stuff after # is not part of query string, so get rid of it
+      queryString = queryString.split('#')[0];
+
+      // split our query string into its component parts
+      var arr = queryString.split('&');
+
+      for (var i = 0; i < arr.length; i++) {
+        // separate the keys and the values
+        var a = arr[i].split('=');
+
+        // set parameter name and value (use 'true' if empty)
+        var paramName = a[0];
+        var paramValue = typeof (a[1]) === 'undefined' ? true : a[1];
+
+        // (optional) keep case consistent
+        paramName = paramName.toLowerCase();
+        if (typeof paramValue === 'string') paramValue = paramValue.toLowerCase();
+
+        // if the paramName ends with square brackets, e.g. colors[] or colors[2]
+        if (paramName.match(/\[(\d+)?\]$/)) {
+
+          // create key if it doesn't exist
+          var key = paramName.replace(/\[(\d+)?\]/, '');
+          if (!obj[key]) obj[key] = [];
+
+          // if it's an indexed array e.g. colors[2]
+          if (paramName.match(/\[\d+\]$/)) {
+            // get the index value and add the entry at the appropriate position
+            var index = /\[(\d+)\]/.exec(paramName)[1];
+            obj[key][index] = paramValue;
+          } else {
+            // otherwise add the value to the end of the array
+            obj[key].push(paramValue);
+          }
+        } else {
+          // we're dealing with a string
+          if (!obj[paramName]) {
+            // if it doesn't exist, create property
+            obj[paramName] = paramValue;
+          } else if (obj[paramName] && typeof obj[paramName] === 'string') {
+            // if property does exist and it's a string, convert it to an array
+            obj[paramName] = [obj[paramName]];
+            obj[paramName].push(paramValue);
+          } else {
+            // otherwise add the property
+            obj[paramName].push(paramValue);
+          }
+        }
+      }
+    }
+
+    return obj;
+  }
+
+  var from = getAllUrlParams().usuario;
+  console.log('Meu nome é: ' + from);
+
+  function getParameterByName(name) {
+    name = name.replace(/[\[]/, "\\[").replace(/[\]]/, "\\]");
+    var regex = new RegExp("[\\?&]" + name + "=([^&#]*)"),
+      results = regex.exec(location.search);
+    return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
+  }
+
+  function getAudio(successCallback, errorCallback) {
+    navigator.getUserMedia({
+      audio: true,
+      video: false
+    }, successCallback, errorCallback);
+  }
+
+  function onReceiveCall(call) {
+
+    console.log('Você está sendo chamado ...');
+    console.log(call);
+    var aceitou = confirm("Você está sendo chamado por " + call.peer + ", gostaria de aceitar a chamada?")
+    if (aceitou) {
+      getAudio(
+        function (MediaStream) {
+          call.answer(MediaStream);
+          console.log('Respondendo chamada...');
+          $("#andamento").text("Respondendo chamada... <i class='fas fa-circle-notch fa-spin'></i>")
+        },
+        function (err) {
+          console.log('Um erro ocorreu ao recuperar seu aúdio');
+          $("#andamento").text("Erro inesperado, atualize a página.")
+          console.log(err);
+        }
+      );
+    } else {
+      call.close();
+    }
+    call.on('stream', onReceiveStream);
+  }
+
+  function onReceiveStream(stream) {
+    socket.emit('connection');
+    var audio = document.querySelector('audio');
+    audio.srcObject = stream;
+    audio.onloadedmetadata = function (e) {
+      console.log('tocando o audio');
+      $("#andamento").text("Em chamada com " + $("#to").val());
+      $("#call-controls").css("visibility", "visible");
+      $("#pos-nick").css("visibility", "hidden");
+      $("#end-call").css("visibility", "visible");
+      audio.play();
+      $("#container-chat").removeAttr("hidden");
+      //$('#container-chat').text('<component-chat-texto :id="'+ from +'" :to="'+ $("#to").val() +'"></component-chat-texto>');
+    }
+  }
+  var peer = new Peer(
+    from, {
+      host: 'vps13171.publiccloud.com.br',
+      port: 9000,
+      path: '/peerjs',
+      config: {
+        'iceServers': [{
+            urls: 'stun:stun.l.google.com:19302'
+          },
+          {
+            urls: 'stun:stunserver.org'
+          },
+          {
+            urls: 'turn:numb.viagenie.ca',
+            credential: 'muazkh',
+            username: 'webrtc@live.com'
+          },
+          {
+            urls: 'turn:192.158.29.39:3478?transport=udp',
+            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            username: '28224511:1379330808'
+          },
+          {
+            urls: 'turn:192.158.29.39:3478?transport=tcp',
+            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+            username: '28224511:1379330808'
+          }
+        ]
+      }
+    }
+  );
+
+  //rgba(0,90,255,0.321)
+
+
+  peer.on('open', function (id) {
+    console.log('Meu ID do peer é: ' + id);
+    $("#texto").html("<font size='72px'>Você está conectado como " + id + "</font>")
+    $("#pos-nick").css("visibility", "visible")
+  });
+  peer.on('call', onReceiveCall);
+  $("#mutecall").click(() => {
+
+  })
+  $("#silentcall").click(() => {
+
+    var audioplayer = document.querySelectorAll("audio");
+    if (audioplayer.volume === 0.0) {
+      audioplayer.volume = 1.0;
+      $("#silentcall").html("<i class='fas fa-volume'></i>");
+    } else {
+      audioplayer.volume = 0.0;
+      $("#silentcall").html("<i class='fas fa-volume'></i>");
+
+    }
+  })
+  $('#start-call').click(function () {
+    console.log('Começando chamada...');
+    $("#andamento").html("Chamando... <i class='fas fa-circle-notch fa-spin'></i>")
+    var to = $('#to').val();
+    getAudio(
+      function (MediaStream) {
+        $('#to').attr('type', 'hidden');
+        $('#start-call').attr('disabled', 'disabled');
+        console.log('Ligando para ' + to);
+        $("#andamento").html('Ligando para ' + to + " <i class='fas fa-circle-notch fa-spin'></i>");
+        var call = peer.call(to, MediaStream);
+        call.on('stream', onReceiveStream);
+      },
+      function (err) {
+        console.log('Um erro ocorreu ao pegar o seu aúdio');
+        $('#start-call').attr('enabled', 'enabled');
+        console.log(err);
+      }
+    );
+
+  });
+  //socket.on('receiveMessage', (data) => receiveMessage);
+
+  function receiveMessage(data){
+    var message = '';
+    message += '<div><div class="text">';
+    message += '<span class="name"></span>';
+    message += data;
+    message += '</div></div>';
+    $('#messages').append(message);
+  }
+
+  $('#message').keypress(function(e){
+    var code = e.which; // recommended to use e.which, it's normalized across browsers
+    if(code==13)e.preventDefault();
+    if(code==32||code==13||code==188||code==186){
+      socket.emit('sendMessage', {message: $('#message').val(), to: to});
+      var message = '';
+      message += '<div><div class="text">';
+      message += '<span class="name">'+ from +'</span>';
+      message += $('#message').val();;
+      message += '</div></div>';
+      $('#message').val('');
+      $('#messages').append(message);
+    }
+  });
+  function sendMessage(){
+    socket.emit('sendMessage', {message: $('#message').val(), to: to});
+    var message = '';
+    message += '<div><div class="text">';
+    message += '<span class="name">'+ from +'</span>';
+    message += $('#message').val();;
+    message += '</div></div>';
+    $('#message').val('');
+    $('#messages').append(message);
+  }
+  //socket.on('istyping', someoneIsTyping(data));
+  //socket.on('notyping', finishIsTyping(data));
+  //socket.on('finishing', finishingChat(data));
+</script>

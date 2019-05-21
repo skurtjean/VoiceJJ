@@ -1,0 +1,33 @@
+{
+  "name": "voicejj",
+  "version": "0.0.1",
+  "description": "voice chat over node",
+  "main": "peer.js",
+  "scripts": {
+    "start": "node peer.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "nodemon peer.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maotovisk/VoiceJJ.git"
+  },
+  "author": "Lucas Veiga, Jean José, Danton de Mello, Nicholas Gushiken",
+  "license": "GPL-3.0",
+  "bugs": {
+    "url": "https://github.com/maotovisk/VoiceJJ/issues"
+  },
+  "homepage": "https://github.com/maotovisk/VoiceJJ#readme",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "ejs": "^2.6.1",
+    "express": "^4.16.4",
+    "express-session": "^1.16.1",
+    "mongodb": "^3.2.4",
+    "peer": "^0.2.10",
+    "socket.io": "^2.2.0"
+  },
+  "devDependencies": {
+    "nodemon": "^1.19.0"
+  }
+}
