@@ -7,8 +7,7 @@ const ExpressPeerServer = require('peer').ExpressPeerServer;
 const MongoClient = require('mongodb').MongoClient;
 const io = require('socket.io')(http);
 const crypto = require('crypto');
-const uri = "mongodb+srv://Voicejj:Voicejj2019@voicejj-dszcc.mongodb.net/test?retryWrites=true"
-var users = [];
+const uri = "mongodb+srv://Voicejj:Voicejj2019@voicejj-dszcc.mongodb.net/test?retryWrites=true";
 
 app.set('view engine', 'ejs');
 /*
@@ -106,7 +105,9 @@ app.post('/cadastrar', function(req, res) {
 app.get('/lista', function(req, res){
     console.log(userslog);
     if(autentica(req.session._id)){
-        res.render('Lista.ejs', {users: userslog});
+        res.render('Lista.ejs', {
+            users: userslog,
+        });
     }
     else{
         res.redirect('/login');

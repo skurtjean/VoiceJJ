@@ -6,7 +6,7 @@
     <title>VoiceJJ - Um app simples de voz</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" type="text/css" href="/css/main.css">
-    <script src="/js/main.js"></script>
+    <script src="/main.js"></script>
 </head>
 <body>
     <table>
@@ -17,14 +17,16 @@
             </tr>
         </thead>
         <tbody>
-            <% users.forEach(function(details) { %>
+            <% 
+            for (var key in users) { %>
                 <tr>
-                    <td><%= details.email %></td>
-                    <td><%= details.user %></td>
-                    <td>abacaxi</td>
+                    <td><%= users[key].user %></td>
+                    <td><%= users[key].email %></td>
                 </tr>
-            <% }) %>
+            <% }
+            %>
         </tbody>
+        
     </table>
 </body>
 </html>
