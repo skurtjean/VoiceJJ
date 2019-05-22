@@ -79,7 +79,7 @@ app.post('/logar', function(req, res) {
         userslog[results[0]._id]._id = results[0]._id;
         userslog[results[0]._id].email = results[0].email;
         userslog[results[0]._id].user = results[0].username;
-        res.redirect('/lista');
+        res.redirect('/principal');
     });
 });
 app.get('/cadastro', function(req, res) { 
@@ -113,7 +113,18 @@ app.get('/lista', function(req, res){
         res.redirect('/login');
     }
 });
-
+app.get('/principal', function(req, res){
+    console.log(userslog);
+    if(autentica(req.session._id)){
+        res.render('Principal.ejs', {
+            users: userslog,
+            sessao: req.session._id,
+        });
+    }
+    else{
+        res.redirect('/login');
+    }
+});
 
 
 
