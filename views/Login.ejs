@@ -13,9 +13,14 @@
     <center>
         <form action="/logar" method="POST">
             <h1 class="grande">Login</h1>
+            <% if(typeof error !== 'undefined') {%>
+            <br>
+            <span><%= error %></span>
+            <br>
+            <% } %>
             <p><font size="48px" >Insira o seu usuario e sua senha </font></p>
-            <label for="user">Usuário: </label>
-            <input type="text" id="user" name="user">
+            <label for="user">E-mail: </label>
+            <input type="text" id="email" name="email">
             <br>
             <label for="pass">Senha: </label>
             <input style="margin-top: 5px" type="password" id="pass" name="pass">

@@ -71,15 +71,22 @@ app.get('/login', function(req, res) {
     res.render('Login.ejs');
 });
 app.post('/logar', function(req, res) { 
-    var username = req.body.user;
+    var email = req.body.email;
     var password = crypto.createHash('md5').update(req.body.pass).digest('hex');
-    let cursor = db.collection('users').find({"username": username, "password": password}).toArray((err, results) => {
+    let cursor = db.collection('users').find({"email": email, "password": password}).toArray((err, results) => {
         if (err) return console.log(err);
-        userslog[results[0]._id] = req.session;
-        userslog[results[0]._id]._id = results[0]._id;
-        userslog[results[0]._id].email = results[0].email;
-        userslog[results[0]._id].user = results[0].username;
-        res.redirect('/principal');
+        if(results[0]){
+            userslog[results[0]._id] = req.session;
+            userslog[results[0]._id]._id = results[0]._id;
+            userslog[results[0]._id].email = results[0].email;
+            userslog[results[0]._id].user = results[0].username;
+            res.redirect('/principal');
+        }
+        else{
+            res.render('Login.ejs', {
+                error: 'E-mail ou senha incorreto'
+            });
+        }
     });
 });
 app.get('/cadastro', function(req, res) { 
@@ -87,34 +94,32 @@ app.get('/cadastro', function(req, res) {
 });
 app.post('/cadastrar', function(req, res) {
     var email = req.body.email;
-    var user = req.body.user;
-    var password = crypto.createHash('md5').update(req.body.pass).digest('hex');
-    var users = new Object();
-    users.email = email;
-    users.username = user;
-    users.password = password;
-    db.collection('users').insertOne(users, (err, result) => {
-        if (err) return console.log(err);
-        userslog[result.ops[0]._id] = req.session;
-        userslog[result.ops[0]._id]._id = result.ops[0]._id;
-        userslog[result.ops[0]._id].email = result.ops[0].email;
-        userslog[result.ops[0]._id].user = result.ops[0].username;
-        res.redirect('/lista');
+    let cursor = db.collection('users').find({"email": email}).limit(1).toArray((err, results) => {
+        if(err) return console.log(err);
+        if(results[0]){
+            res.render('Cadastro.ejs',{
+                error: 'E-mail já cadastrado'
+            });
+        }
+        else{        
+            var user = req.body.user;
+            var password = crypto.createHash('md5').update(req.body.pass).digest('hex');
+            var users = new Object();
+            users.email = email;
+            users.username = user;
+            users.password = password;
+            db.collection('users').insertOne(users, (err, result) => {
+                if (err) return console.log(err);
+                userslog[result.ops[0]._id] = req.session;
+                userslog[result.ops[0]._id]._id = result.ops[0]._id;
+                userslog[result.ops[0]._id].email = result.ops[0].email;
+                userslog[result.ops[0]._id].user = result.ops[0].username;
+                res.redirect('/principal');
+            });
+        }
     });
 });
-app.get('/lista', function(req, res){
-    console.log(userslog);
-    if(autentica(req.session._id)){
-        res.render('Lista.ejs', {
-            users: userslog,
-        });
-    }
-    else{
-        res.redirect('/login');
-    }
-});
 app.get('/principal', function(req, res){
-    console.log(userslog);
     if(autentica(req.session._id)){
         res.render('Principal.ejs', {
             users: userslog,

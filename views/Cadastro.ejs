@@ -13,6 +13,11 @@
     <center>
         <form action="/cadastrar" method="POST">
             <h1 class="grande">Cadastro</h1>
+            <% if(typeof error !== 'undefined') {%>
+            <br>
+            <span><%= error %></span>
+            <br>
+            <% } %>
             <p><font size="48px">Insira seu e-mail, um usuário e sua senha</font></p>
             <label for="email">E-mail: </label>
             <input type="text" id="email" name="email">
