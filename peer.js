@@ -20,20 +20,32 @@ app.use(function(req, res, next) {
 app.use(session({secret: 'Voicejj',saveUninitialized: true,resave: true}))
 app.use(express.static(__dirname + '/assets'));
 app.use(bodyParser.urlencoded({extended:true}));
-var userslog = [];
+var userson = [];
+var userssocket = {};
+var groups = [];
 
 var server = require('http').createServer(app);
 var peerserver = ExpressPeerServer(server, { debug: true });
 app.use('/peerjs', peerserver);
 
+
+
+//socket functions (ou emits, o que preferir)
 io.on('connection', function(socket){
     console.log('O maot é um vagabundo');
-    /*socket.on('join', function(data){
-        users[data.from] = socket;
+    socket.on('join', function(data){
+        userssocket[data._id] = socket;
+        var usersid = {};
+        var usersuser = {};
+        for (var key in userson) {
+            usersid[key] = userson[key]._id;
+            usersuser[key] = userson[key].user;
+        }
+        io.emit('onlineUsers', {usersid: usersid, usersuser: usersuser});
     });
     socket.on('disconnect', function(){
         console.log('O maot é um otário');
-    });*/
+    });
     socket.on('sendMessage', function(data){
         console.log("O Nicholas é um merda");
         console.log(data)
@@ -53,7 +65,7 @@ io.on('connection', function(socket){
 
 //funções
 function autentica(data){
-    if(!(data in userslog)){
+    if(!(data in userson)){
         return false;
     }
     else{
@@ -76,10 +88,10 @@ app.post('/logar', function(req, res) {
     let cursor = db.collection('users').find({"email": email, "password": password}).toArray((err, results) => {
         if (err) return console.log(err);
         if(results[0]){
-            userslog[results[0]._id] = req.session;
-            userslog[results[0]._id]._id = results[0]._id;
-            userslog[results[0]._id].email = results[0].email;
-            userslog[results[0]._id].user = results[0].username;
+            userson[results[0]._id] = req.session;
+            userson[results[0]._id]._id = results[0]._id;
+            userson[results[0]._id].email = results[0].email;
+            userson[results[0]._id].user = results[0].username;
             res.redirect('/principal');
         }
         else{
@@ -110,10 +122,10 @@ app.post('/cadastrar', function(req, res) {
             users.password = password;
             db.collection('users').insertOne(users, (err, result) => {
                 if (err) return console.log(err);
-                userslog[result.ops[0]._id] = req.session;
-                userslog[result.ops[0]._id]._id = result.ops[0]._id;
-                userslog[result.ops[0]._id].email = result.ops[0].email;
-                userslog[result.ops[0]._id].user = result.ops[0].username;
+                userson[result.ops[0]._id] = req.session;
+                userson[result.ops[0]._id]._id = result.ops[0]._id;
+                userson[result.ops[0]._id].email = result.ops[0].email;
+                userson[result.ops[0]._id].user = result.ops[0].username;
                 res.redirect('/principal');
             });
         }
@@ -122,7 +134,7 @@ app.post('/cadastrar', function(req, res) {
 app.get('/principal', function(req, res){
     if(autentica(req.session._id)){
         res.render('Principal.ejs', {
-            users: userslog,
+            users: userson,
             sessao: req.session._id,
         });
     }
