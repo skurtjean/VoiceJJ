@@ -144,8 +144,6 @@ app.get('/principal', function(req, res){
 });
 
 
-
-
 //Portas de cada um
 MongoClient.connect(uri, (err, client) => {
     if (err) return console.log(err);

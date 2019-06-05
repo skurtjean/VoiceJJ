@@ -1,12 +1,5 @@
 <template>
-<div id="chat-frame-box">
-        <div class="status status-done">
-             <div v-if="finished" class="mb-4">
-                <script>
-                    alert('Chat finalizado.')
-                </script>
-            </div>
-        </div>
+    <div id="chat-frame-box">
         <div class="talking-area">
             <div v-for="(item, index) in messages" :key="index" :class="item.fromUserId == sender.id ? 'msg agent-me' : 'msg agent-notme'">
                 <div class="text">
@@ -21,16 +14,16 @@
             <button @click="sendMessage">Enviar Mensagem</button>
         </div>
     </div>
-
 </template>
-
 <script>
 export default {
-    props: ['id', 'to'],
+    props: ['id', 'to', 'user'],
     data () {
         return {
             message: '',
             messages: [],
+            username: props['user'],
+            parceiro: '',
             typing: false,
             finished: false,
             socket: io('localhost:9001')
@@ -40,15 +33,12 @@ export default {
         this.socket.emit("join", {
             from: this.from
         });
-    },
+    },    
     mounted() {
-        //Listen for messages
         this.socket.on('receiveMessage', this.receiveMessage);
         this.socket.on('istyping', this.someoneIsTyping);
         this.socket.on('notyping', this.finishIsTyping);
         this.socket.on('finishing', this.finishingChat);
-    },
-    destroyed() {
     },
     methods: {
         sendMessage() {
@@ -104,13 +94,6 @@ export default {
         }
     }
 }
+
 </script>
 
-<style scoped>
-    .typing {
-        font-family: 'Open Sans', sans-serif;
-        font-size: 14px;
-        color: #c7bdbd;
-        margin-bottom: 10px;
-    }
-</style>

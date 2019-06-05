@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="../css/main.css">
+</head>
+<body>
+    <div class="chat" id="container-chat">
+        <ul class="topbar" id="topbar">
+            <li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
+            <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>
+            <p> Conversando com {{ nickdapessoa.wav }} </p>
+        </ul>
+        <div id="messages">
+            <div class="message">
+                <div class="autor">Fulano</div>
+                <div class="messagebody"> Aqui está uma mensagem muito boa de boa noite noite de de quem quem ta ta lendo lendo a pessoa le e não percebe que perdeu o tempo e está lendo essa coisa que está escrita e a pessoa está lendo.</div>
+            </div>
+            <hr class="sepadadormensagem">
+            <div class="message">
+                <div class="autor">Beltrano</div>
+                <div class="messagebody"> De fato, aqui está uma mensagem muito boa de boa noite noite de de quem quem ta ta lendo lendo a pessoa le e não percebe que perdeu o tempo e está lendo essa coisa que está escrita e a pessoa está lendo.</div>
+            </div>
+            
+        </div>
+        <p class="digitando"> O corno está digitando </p>
+        <div class="container">
+            <textarea class="textochat" id="textbox"></textarea>
+            <button class="enviarmensagem" id="send">↩</button>
+        </div>
+    </div>
+    
+</body>
+</html>
