@@ -11,6 +11,8 @@ body {
 	font-family: 'product';
 	overflow: hidden;
 	height:100vh;
+	width: 100vw;
+	margin: 0px 0px 0px 0px;
 }
 .grande {
 	font-size: 72px;
@@ -67,23 +69,20 @@ input[type=text]:hover, input[type=password]:hover {
 p {
 	color: #ffffff;
 }
-#feedback { font-size: 1.4em; }
-  #selectable .ui-selecting { background: #FECA40; }
-  #selectable .ui-selected { background: #F39814; color: white; }
-  #selectable { list-style-type: none; margin: 0; padding: 0; width: 60%; }
-	#selectable li { margin: 3px; padding: 0.4em; font-size: 1.4em; height: 18px; }
-	
+
 .chat {
 	margin-left: 240px;
 	height: 100%;
-	overflow:auto;
+	border-left: 1px solid white;
+	overflow-y:auto;
+	overflow-x: hidden;
 }
 .topbar {  
 	list-style-type: none;
   	margin: 0px;
-  	padding: 0;
+  	padding-left: 15px;
   	overflow: hidden;
-  	position: fixed;
+  	position: absolute;
 	top: 0;
 	height: 53px;
   	width: 100%;
@@ -120,9 +119,10 @@ p {
 	margin-top: 72px;
 	background-color: #4dd49c;
 	border: solid rgb(216, 226, 186) 3px;
-	height: 70vh;
+	height: 65vh;
 	overflow-y: scroll;
 	padding-left: 10px;
+	margin-left: 10px;
 }
 .autor {
 	color: #756e6e;
@@ -130,6 +130,7 @@ p {
 .container {
 	display:table;
 	width:100%;
+	margin-left: 10px;
 }
 .textochat {
 	background-color: #3CBC8D;
@@ -173,6 +174,9 @@ p {
 .enviarmensagem:hover {
 	cursor: pointer;
 	background-color: rgb(130, 238, 198);
+}
+.digitando {
+	padding-left: 15px;
 }
 .userlist {
 	margin-top: 72px;

@@ -20,7 +20,7 @@ app.use(function(req, res, next) {
 app.use(session({secret: 'Voicejj',saveUninitialized: true,resave: true}))
 app.use(express.static(__dirname + '/assets'));
 app.use(bodyParser.urlencoded({extended:true}));
-var userson = [];
+var userson = {};
 var userssocket = {};
 var group = 0;
 var groups = [];
@@ -38,13 +38,7 @@ io.on('connection', function(socket){
     console.log('O maot é um vagabundo');
     socket.on('join', function(data){
         userssocket[data._id] = socket;
-        var usersid = {};
-        var usersuser = {};
-        for (var key in userson) {
-            usersid[key] = userson[key]._id;
-            usersuser[key] = userson[key].user;
-        }
-        io.emit('onlineUsers', {usersid: usersid, usersuser: usersuser});
+        io.emit('onlineUsers', {userson});
     });
     socket.on('disconnect', function(){
     });

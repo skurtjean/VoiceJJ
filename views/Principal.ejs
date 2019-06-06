@@ -14,12 +14,8 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
 </head>
 <body>
-    <div id="online-users">
-      <ol id="selectable">
-
-      </ol>  
-    </div>
     <div id="app">
+      <lista-users></lista-users>
       <grupo from="<%= users[sessao]._id %>" to="<%= grupo %>" ></grupo>
     </div>
     <script src="/vuejs/vue.js"></script>
@@ -173,24 +169,6 @@
       message += '</div></div>';
       $('#message').val('');
       $('#messages').append(message);
-    }
-  });
-  function sendMessage(){
-    socket.emit('sendMessage', {message: $('#message').val(), to: to});
-    var message = '';
-    message += '<div><div class="text">';
-    message += '<span class="name">'+ from +'</span>';
-    message += $('#message').val();;
-    message += '</div></div>';
-    $('#message').val('');
-    $('#messages').append(message);
-  }
-  
-  socket.on('onlineUsers', function(data) {
-    $('#selectable').html('');
-    console.log(data);
-    for (var key in data.usersid) {
-      $('#selectable').append("<li class='ui-widget-content' data-value='"+ data.usersid[key] +"'> " + data.usersuser[key] + "</li>")
     }
   });
   //socket.on('istyping', someoneIsTyping(data));

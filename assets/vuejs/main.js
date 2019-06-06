@@ -1,11 +1,39 @@
 window.Vue = Vue;
 
+window.sock = io('localhost:9001');
+
+Vue.component('lista-users', {
+    template: `
+    <div class="userlist" id="listausers">
+        <div class="tituloUserList" id="userlisttitle">
+            <p>Usuários Online</p>
+        </div>
+        <div class="list-users" id="list-users">
+            <a class="usernalista" v-for="(item, index) in users.userson" :key="index" :value="item._id"> {{ item.user }}</a>
+        </div>
+    </div>`,
+    data: function(){
+        return {
+            users: [],
+            socket: sock
+        }
+    },
+    mounted(){
+        this.socket.on('onlineUsers', this.Users);
+    },
+    methods: {
+        Users(usersdata){
+            this.users = usersdata;
+        }
+    }
+});
+
 Vue.component('grupo',{
     template: `
         <div class="chat" id="container-chat">
             <ul class="topbar" id="topbar">
-                <li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
-                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>
+                <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
+                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>-->
                 <li class="topbar-item-li"> <p> Conversando no grupo {{ to }} </p></li>
             </ul>
             <div id="messages">
@@ -26,8 +54,8 @@ Vue.component('grupo',{
         return {
             message: '',
             messages: [],
-            socket: io('localhost:9001'),
-        }
+            socket: sock
+            }
     },
     created(){
         this.socket.emit('join', {_id : this.from});

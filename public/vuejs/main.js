@@ -60,32 +60,51 @@
 /******/ 	__webpack_require__.p = "/";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 1);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
-/* 0 */,
-/* 1 */
+/* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-module.exports = __webpack_require__(2);
+module.exports = __webpack_require__(1);
 
 
 /***/ }),
-/* 2 */
-/***/ (function(module, __webpack_exports__) {
+/* 1 */
+/***/ (function(module, exports) {
 
-"use strict";
 window.Vue = Vue;
 
+window.sock = io('localhost:9001');
+
+Vue.component('lista-users', {
+    template: '\n    <div class="userlist" id="listausers">\n        <div class="tituloUserList" id="userlisttitle">\n            <p>Usu\xE1rios Online</p>\n        </div>\n        <div class="list-users" id="list-users">\n            <a class="usernalista" v-for="(item, index) in users.userson" :key="index" :value="item._id"> {{ item.user }}</a>\n        </div>\n    </div>',
+    data: function data() {
+        return {
+            users: [],
+            socket: sock
+        };
+    },
+    mounted: function mounted() {
+        this.socket.on('onlineUsers', this.Users);
+    },
+
+    methods: {
+        Users: function Users(usersdata) {
+            this.users = usersdata;
+        }
+    }
+});
+
 Vue.component('grupo', {
-    template: '\n        <div class="chat" id="container-chat">\n            <ul class="topbar" id="topbar">\n                <li class="topbar-item-li"> <a class="topbar-item" id="video-call">\uD83D\uDCF9 </a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">\uD83D\uDCDE</a></li>\n                <p> Conversando no grupo {{ to }} </p>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>',
+    template: '\n        <div class="chat" id="container-chat">\n            <ul class="topbar" id="topbar">\n                <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">\uD83D\uDCF9 </a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">\uD83D\uDCDE</a></li>-->\n                <li class="topbar-item-li"> <p> Conversando no grupo {{ to }} </p></li>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>',
     props: { 'from': String, 'to': String },
     data: function data() {
         return {
             message: '',
             messages: [],
-            socket: io('localhost:9001')
+            socket: sock
         };
     },
     created: function created() {
