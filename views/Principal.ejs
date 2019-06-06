@@ -12,24 +12,21 @@
     <script src="//www.WebRTC-Experiment.com/RecordRTC.js"></script><link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.0/css/all.css"
     integrity="sha384-Mmxa0mLqhmOeaE8vgOSbKacftZcsNYDjQzuCOm6D02luYSzBG8vpaOykv9lFQ51Y" crossorigin="anonymous">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.2.0/socket.io.js"></script>
-    <script src="/vuejs/main.js"></script>
 </head>
 <body>
-    <h1> Você está logado como <%= users[sessao].user %></h1>
-    <h2> Selecione um usuário na lista pra conversar </h2>
     <div id="online-users">
       <ol id="selectable">
 
       </ol>  
     </div>
-    <component-chat-texto id="<%= users[sessao]._id %>" to="<%= users[sessao]._id %>" ></component-chat-texto>
-
+    <div id="app">
+      <grupo from="<%= users[sessao]._id %>" to="<%= grupo %>" ></grupo>
+    </div>
+    <script src="/vuejs/vue.js"></script>
+    <script src="/vuejs/main.js"></script>
 <script>
   var onlineUsers;
   $("input").val("");
-  var socket = io('localhost:9001');
-  socket.emit('join', {_id : '<%= users[sessao]._id %>'});
-
   function getAudio(successCallback, errorCallback) {
     navigator.getUserMedia({
       audio: true,

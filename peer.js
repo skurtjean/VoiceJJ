@@ -22,7 +22,10 @@ app.use(express.static(__dirname + '/assets'));
 app.use(bodyParser.urlencoded({extended:true}));
 var userson = [];
 var userssocket = {};
+var group = 0;
 var groups = [];
+groups[0] = [];
+groups[1] = [];
 
 var server = require('http').createServer(app);
 var peerserver = ExpressPeerServer(server, { debug: true });
@@ -44,12 +47,11 @@ io.on('connection', function(socket){
         io.emit('onlineUsers', {usersid: usersid, usersuser: usersuser});
     });
     socket.on('disconnect', function(){
-        console.log('O maot é um otário');
     });
     socket.on('sendMessage', function(data){
-        console.log("O Nicholas é um merda");
-        console.log(data)
-        io.emit("receiveMessage", data.message);
+        for (var key in groups[data.to]){
+            userssocket[key].emit("receiveMessage", {fromUsername: userson[data.fromUserId].user, to: data.to, message: data.message});
+        }
     });/*
     socket.on('typing', function(data){
         console.log("O Jean é um inutil");
@@ -133,9 +135,12 @@ app.post('/cadastrar', function(req, res) {
 });
 app.get('/principal', function(req, res){
     if(autentica(req.session._id)){
+        group = (group == 0)? 1 : 0;
+        groups[group][req.session._id] = req.session.user;
         res.render('Principal.ejs', {
             users: userson,
             sessao: req.session._id,
+            grupo: group
         });
     }
     else{
