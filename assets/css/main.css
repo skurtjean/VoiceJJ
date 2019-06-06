@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'product';
-  src: url('font.ttf');
+  src: url('../font.ttf');
 }
 body {
 	background-color: #00cc99;
