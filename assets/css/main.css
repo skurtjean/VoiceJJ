@@ -101,8 +101,8 @@ p {
 	border: solid #FFFFFF 3px;
 	border-radius: 4px;
 	margin-top: 5px;
-	margin-right: 3px;
-	margin-left: 3px;
+	margin-right: 8px;
+	margin-left: 8px;
 	margin-bottom: 5px;
 	border-radius: 4px;
 	padding-top: 10px;
@@ -120,7 +120,7 @@ p {
 	margin-top: 72px;
 	background-color: #4dd49c;
 	border: solid rgb(216, 226, 186) 3px;
-	height: 70%;
+	height: 70vh;
 	overflow-y: scroll;
 	padding-left: 10px;
 }
@@ -133,6 +133,8 @@ p {
 }
 .textochat {
 	background-color: #3CBC8D;
+	font-family: 'product';
+	font-size: 12px;
 	float: left;
 	display: table-cell;
 	width:88%;
@@ -149,6 +151,7 @@ p {
 	resize: none;
 	margin-bottom: 5px;
 	transition: background-color 0.5s;
+	text-shadow: #000000 1px 1px 1px;
 }
 .enviarmensagem {
 	float:right;
@@ -166,6 +169,10 @@ p {
 	margin-right: 15px;
 	margin-bottom: 5px;
 	transition: background-color 0.5s;
+}
+.enviarmensagem:hover {
+	cursor: pointer;
+	background-color: rgb(130, 238, 198);
 }
 .userlist {
 	margin-top: 72px;

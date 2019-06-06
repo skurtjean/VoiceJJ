@@ -6,7 +6,7 @@ Vue.component('grupo',{
             <ul class="topbar" id="topbar">
                 <li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
                 <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>
-                <p> Conversando no grupo {{ to }} </p>
+                <li class="topbar-item-li"> <p> Conversando no grupo {{ to }} </p></li>
             </ul>
             <div id="messages">
                 <div v-for="(item, index) in messages" :key="index" class="message">
@@ -17,7 +17,7 @@ Vue.component('grupo',{
             </div>
             <p class="digitando"> O corno está digitando </p>
             <div class="container">
-                <textarea v-model="message" @keydown.enter="sendMessage" class="textochat" id="textbox"></textarea>
+                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>
                 <button @click="sendMessage" class="enviarmensagem" id="send">↩</button>
             </div>
         </div>`,
