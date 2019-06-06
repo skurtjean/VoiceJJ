@@ -1,14 +1,16 @@
 @font-face {
   font-family: 'product';
-  src: url('font.ttf');
+  src: url('../font.ttf');
 }
 body {
 	background-color: #00cc99;
+	left: 0;
+	top: 0;
 	color: white;
 	height: 100%;
 	font-family: 'product';
 	overflow: hidden;
-	height:100%;
+	height:100vh;
 }
 .grande {
 	font-size: 72px;
@@ -73,17 +75,18 @@ p {
 	
 .chat {
 	margin-left: 240px;
-	padding-top: 72px;
-	overflow:scroll;
+	height: 100%;
+	overflow:auto;
 }
 .topbar {  
 	list-style-type: none;
-  margin: 0;
-  padding: 0;
-  overflow: hidden;
-  position: fixed;
-  top: 0;
-  width: 100%;
+  	margin: 0px;
+  	padding: 0;
+  	overflow: hidden;
+  	position: fixed;
+	top: 0;
+	height: 53px;
+  	width: 100%;
 	background-color: #028363;
 	align-content: right;
 	color: white;
@@ -107,24 +110,31 @@ p {
 	padding-left: 15px;
 	padding-right: 15px;
 	transition: background-color 0.5s;
-  text-decoration: none;
+  	text-decoration: none;
 }
 .topbar-item:hover {
 	cursor: pointer;
 	background-color: rgb(130, 238, 198);
 }
 #messages {
+	margin-top: 72px;
 	background-color: #4dd49c;
 	border: solid rgb(216, 226, 186) 3px;
-	height: 70vh;
-	overflow: scroll;
+	height: 70%;
+	overflow-y: scroll;
+	padding-left: 10px;
 }
 .autor {
 	color: #756e6e;
 }
+.container {
+	display:table;
+	width:100%;
+}
 .textochat {
 	background-color: #3CBC8D;
 	float: left;
+	display: table-cell;
 	width:88%;
 	color: white;
 	border-color: #FFFFFF;
@@ -136,14 +146,13 @@ p {
 	padding-right: 15px;
 	margin-right: 10px;
 	margin-top: 5px;
+	resize: none;
 	margin-bottom: 5px;
 	transition: background-color 0.5s;
 }
-.container {
-	height: 25vh;
-}
 .enviarmensagem {
 	float:right;
+	display: table-cell;
 	color: #FFFFFF;
 	background-color: #3CBC8D;
 	border: solid #FFFFFF 3px;
@@ -158,4 +167,48 @@ p {
 	margin-bottom: 5px;
 	transition: background-color 0.5s;
 }
-  
+.userlist {
+	margin-top: 72px;
+	float: left;
+	overflow:auto;
+	width: 240px;
+	top:0;
+	left:0;
+}
+.tituloUserList {
+	list-style-type: none;
+	top: 0;
+	left:0;
+	height: 53px;
+	text-align: center;
+  	overflow: hidden;
+	position: fixed;
+	width:248px;
+	background-color: #115a48;
+	align-content: right;
+	color: white;
+}
+.usernalista {
+	text-decoration: none;
+	display: block;
+	width:215px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	padding-left: 15px;
+	margin-right: 10px;
+	margin-bottom: 8px;
+	border: solid transparent;
+	border-radius: 5px;
+}
+.list-users {
+	list-style-type: none;
+	left: 0;
+}
+.usernalista:hover {
+	cursor: pointer;
+	background-color: rgb(130, 238, 198);
+}
+.usernalista:active {
+	cursor: pointer;
+	background-color: rgb(2, 202, 129);
+}
