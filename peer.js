@@ -7,7 +7,7 @@ const ExpressPeerServer = require('peer').ExpressPeerServer;
 const MongoClient = require('mongodb').MongoClient;
 const io = require('socket.io')(http);
 const crypto = require('crypto');
-const uri = "mongodb+srv://Voicejj:Voicejj2019@voicejj-dszcc.mongodb.net/test?retryWrites=true";
+const uri = "mongodb://Voicejj:Voicejj@vps13171.publiccloud.com.br/voicejj";
 
 app.set('view engine', 'ejs');
 /*

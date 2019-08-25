@@ -6,7 +6,7 @@
   "scripts": {
     "start": "node peer.js",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "nodemon peer.js",
+    "dev": "nodemon server.js",
     "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
     "watch": "npm run development -- --watch",
     "watch-poll": "npm run watch -- --watch-poll",
@@ -30,17 +30,21 @@
     "cross-env": "^5.1",
     "jquery": "^3.2",
     "laravel-mix": "^2.0",
-    "lodash": "^4.17.5",
+    "lodash": "^4.17.15",
+    "nodemon": "^1.19.1",
     "popper.js": "^1.12",
-    "vue": "^2.5.17",
-    "nodemon": "^1.19.1"
+    "vue": "^2.5.17"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "connect-mongodb-session": "^2.2.0",
     "ejs": "^2.6.1",
     "express": "^4.17.1",
     "express-session": "^1.16.1",
+    "express-validator": "^6.1.1",
     "mongodb": "^3.2.6",
+    "nunjucks": "^3.2.0",
     "peer": "^0.2.10",
     "socket.io": "^2.2.0",
     "vuejs": "^3.0.1"

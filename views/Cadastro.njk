@@ -1,0 +1,23 @@
+{% extends "layouts/master.njk"%}
+{% block content%}
+    <center>
+        <form action="cadastrar" method="POST">
+            <h1 class="grande">Cadastro</h1>
+            {% if errors[0] %}
+                <p>{{ errors[0].msg }}</p>
+            {% endif %}
+            <p><font size="48px">Insira seu e-mail, um usuário e sua senha</font></p>
+            <label for="email">E-mail: </label>
+            <input type="text" id="email" name="email">
+            <br>
+            <label for="nome">Usuário: </label>
+            <input type="text" id="nome" name="nome">
+            <br>
+            <label for="pass">Senha: </label>
+            <input type="password" id="pass" name="pass">
+            <br>
+            <br>
+            <button type="submit" class="btn-inicio" >Pronto</button>
+        </form>
+    </center>
+{% endblock%}
