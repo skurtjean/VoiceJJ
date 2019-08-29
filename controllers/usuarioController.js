@@ -6,26 +6,24 @@ const { check, validationResult } = require('express-validator')
 const crypto            = require('crypto');
 const validacoes = require('./validacoesController')
 
-function autentica(data){
-    if(!(data in userson)){
-        return false;
-    }
-    else{
-        return true;
-    }
-}
-
-
+router.get('/', function(req, res){
+    res.render('Principal.njk', {
+        "me": req.session._id,
+        "myName": req.session.nome
+    });
+});
 router.get('/login', function(req, res) { 
     res.render('Login.njk');
 });
 router.post('/logar', function(req, res){
 	var email = req.body.email;
     var password = crypto.createHash('md5').update(req.body.pass).digest('hex');
-    let cursor = req.app.locals.banco.collection('user').find({"email": email, "password": password}).toArray((err, results) => {
+    let cursor = req.app.locals.banco.collection('user').find({"email": email, "senha": password}).toArray((err, results) => {
         if (err) return console.log(err);
         if(results[0]){
-            res.redirect('/users');
+            req.session._id = results[0]._id;
+            req.session.nome = results[0].nome;
+            res.redirect('/user');
         }
         else{
             res.render('Login.njk', {
@@ -47,7 +45,7 @@ router.post('/cadastrar', [
         }
         if(err) return console.log(err);
         if(results[0]){
-            res.render('Cadastro.ejs',{
+            res.render('Cadastro.njk',{
                 error: 'E-mail já cadastrado'
             });
         }
@@ -59,8 +57,10 @@ router.post('/cadastrar', [
 				created_at: new Date()
 			}
             req.app.locals.banco.collection('user').insertOne(user, (err, result) => {
-                if (err) return console.log(err);
-                res.redirect('/users');
+                if (err) return console.log(err);    
+                req.session._id = result[0]._id;
+                req.session.nome = result[0].nome;
+                res.redirect('/user');
             });
         }
     });

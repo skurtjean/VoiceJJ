@@ -1,0 +1,219 @@
+{% extends "layouts/master.njk" %}
+  {% block content %}
+  <div id="app">
+    <listachat me={{ me }} myname={{ myName }}></listachat>
+  </div>
+  <div id="modal1" class="modal">
+    <div class="modal-content">
+      <h4 style="color:#00cc99 !important">Adicionar amigo</h4>
+      <br>
+      <label for="add_friend" style="color:#00cc99 !important">Digite o nome de usuário de quem deseja adicionar:</label>
+      <br>
+      <input style="color:#00cc99 !important" type="text" name="add_friend" id="add_friend">
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="friend">Adicionar</a>
+    </div>
+  </div>
+  <div id="modal2" class="modal">
+    <div class="modal-content">
+      <h4 style="color:#00cc99 !important">Criar ou entrar em um grupo</h4>
+      <br>
+      <label for="add_group" style="color:#00cc99 !important">Digite o nome do grupo:</label>
+      <br>
+      <input style="color:#00cc99 !important" type="text" name="add_group" id="add_group">
+    </div>
+    <div class="modal-footer">
+      <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="group">Adicionar</a>
+    </div>
+  </div>
+  {% endblock %}
+  {% block js %}
+    <script>
+      $(document).ready(function(){
+        $('#modal1').modal()
+        $('#modal2').modal()
+        $('#friend').click(function(){
+          $.ajax({
+            url: "/channel/addFriend",
+            data: {"friend": $('#add_friend').val()},
+            success: function(result){
+              if(result == 1){
+                alert("Amigo adicionado");
+              }
+              else{
+                alert("Amigo não encontrado");
+              }
+            }
+          });
+        });
+        $('#group').click(function(){
+          $.ajax({
+            url: "/channel/addGroup",
+            data: {"group": $('#add_group').val()},
+            success: function(result){
+              if(result == 1){
+                alert("Você entrou no grupo");
+              }
+              else{
+                alert("Você criou o grupo");
+              }
+            }
+          });
+        });
+      });
+      var onlineUsers;
+      $("input").val("");
+      function getAudio(successCallback, errorCallback) {
+        navigator.getUserMedia({
+          audio: true,
+          video: false
+        }, successCallback, errorCallback);
+      }
+
+      function onReceiveCall(call) {
+
+        console.log('Você está sendo chamado ...');
+        console.log(call);
+        var aceitou = confirm("Você está sendo chamado por " + call.peer + ", gostaria de aceitar a chamada?")
+        if (aceitou) {
+          getAudio(
+            function (MediaStream) {
+              call.answer(MediaStream);
+              console.log('Respondendo chamada...');
+              $("#andamento").text("Respondendo chamada... <i class='fas fa-circle-notch fa-spin'></i>")
+            },
+            function (err) {
+              console.log('Um erro ocorreu ao recuperar seu aúdio');
+              $("#andamento").text("Erro inesperado, atualize a página.")
+              console.log(err);
+            }
+          );
+        } else {
+          call.close();
+        }
+        call.on('stream', onReceiveStream);
+      }
+
+      function onReceiveStream(stream) {
+        //socket.emit('connection');
+        var audio = document.querySelector('audio');
+        audio.srcObject = stream;
+        audio.onloadedmetadata = function (e) {
+          console.log('tocando o audio');
+          $("#andamento").text("Em chamada com " + $("#to").val());
+          $("#call-controls").css("visibility", "visible");
+          $("#pos-nick").css("visibility", "hidden");
+          $("#end-call").css("visibility", "visible");
+          audio.play();
+          $("#container-chat").removeAttr("hidden");
+          //$('#container-chat').text('<component-chat-texto :id="'+ from +'" :to="'+ $("#to").val() +'"></component-chat-texto>');
+        }
+      }
+      var peer = new Peer(
+        '<%= sessao %>', {
+          host: 'localhost',
+          port: 9000,
+          path: '/peerjs',
+          config: {
+            'iceServers': [{
+                urls: 'stun:stun.l.google.com:19302'
+              },
+              {
+                urls: 'stun:stunserver.org'
+              },
+              {
+                urls: 'turn:numb.viagenie.ca',
+                credential: 'muazkh',
+                username: 'webrtc@live.com'
+              },
+              {
+                urls: 'turn:192.158.29.39:3478?transport=udp',
+                credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+                username: '28224511:1379330808'
+              },
+              {
+                urls: 'turn:192.158.29.39:3478?transport=tcp',
+                credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
+                username: '28224511:1379330808'
+              }
+            ]
+          }
+        }
+      );
+
+      //rgba(0,90,255,0.321)
+
+
+      peer.on('open', function (id) {
+        console.log('Meu ID do peer é: ' + id);
+        $("#texto").html("<font size='72px'>Você está conectado como " + id + "</font>")
+        $("#pos-nick").css("visibility", "visible")
+      });
+      peer.on('call', onReceiveCall);
+      $("#mutecall").click(() => {
+
+      })
+      $("#silentcall").click(() => {
+
+        var audioplayer = document.querySelectorAll("audio");
+        if (audioplayer.volume === 0.0) {
+          audioplayer.volume = 1.0;
+          $("#silentcall").html("<i class='fas fa-volume'></i>");
+        } else {
+          audioplayer.volume = 0.0;
+          $("#silentcall").html("<i class='fas fa-volume'></i>");
+
+        }
+      })
+      $('#start-call').click(function () {
+        console.log('Começando chamada...');
+        $("#andamento").html("Chamando... <i class='fas fa-circle-notch fa-spin'></i>")
+
+        getAudio(
+          function (MediaStream) {
+            $('#to').attr('type', 'hidden');
+            $('#start-call').attr('disabled', 'disabled');
+            console.log('Ligando para ' + to);
+            $("#andamento").html('Ligando para ' + to + " <i class='fas fa-circle-notch fa-spin'></i>");
+            var call = peer.call(to, MediaStream);
+            call.on('stream', onReceiveStream);
+          },
+          function (err) {
+            console.log('Um erro ocorreu ao pegar o seu aúdio');
+            $('#start-call').attr('enabled', 'enabled');
+            console.log(err);
+          }
+        );
+
+      });
+      //socket.on('receiveMessage', (data) => receiveMessage);
+
+      function receiveMessage(data){
+        var message = '';
+        message += '<div><div class="text">';
+        message += '<span class="name"></span>';
+        message += data;
+        message += '</div></div>';
+        $('#messages').append(message);
+      }
+
+      $('#message').keypress(function(e){
+        var code = e.which; // recommended to use e.which, it's normalized across browsers
+        if(code==13)e.preventDefault();
+        if(code==32||code==13||code==188||code==186){
+          //socket.emit('sendMessage', {message: $('#message').val(), to: to});
+          var message = '';
+          message += '<div><div class="text">';
+          message += '<span class="name">'+ from +'</span>';
+          message += $('#message').val();;
+          message += '</div></div>';
+          $('#message').val('');
+          $('#messages').append(message);
+        }
+      });
+      //socket.on('istyping', someoneIsTyping(data));
+      //socket.on('notyping', finishIsTyping(data));
+      //socket.on('finishing', finishingChat(data));
+    </script>
+  {%endblock%}
