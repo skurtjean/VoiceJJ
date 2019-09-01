@@ -57,10 +57,20 @@ router.post('/cadastrar', [
 				created_at: new Date()
 			}
             req.app.locals.banco.collection('user').insertOne(user, (err, result) => {
-                if (err) return console.log(err);    
-                req.session._id = result[0]._id;
-                req.session.nome = result[0].nome;
-                res.redirect('/user');
+                if (err) return console.log(err);
+                let cursor = req.app.locals.banco.collection('user').find({"email": user.email, "senha": user.senha}).toArray((err, results) => {
+                    if (err) return console.log(err);
+                    if(results[0]){
+                        req.session._id = results[0]._id;
+                        req.session.nome = results[0].nome;
+                        res.redirect('/user');
+                    }
+                    else{
+                        res.render('Cadastro.njk', {
+                            error: true
+                        });
+                    }
+                });
             });
         }
     });

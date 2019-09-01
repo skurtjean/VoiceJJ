@@ -15,7 +15,7 @@ Vue.component('listachat', {
                     <p>Usuários Online</p>
                 </div>
                 <div class="list-users" id="list-users">
-                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item._id2}}</a>
+                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
                 </div>
             </div>
             <div id="groups" v-else>
@@ -37,7 +37,7 @@ Vue.component('listachat', {
                 <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
                 <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>-->
                 <li v-if="selectedFriend.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedFriend._id2 }} </p></li>
-                <li v-else class="topbar-item-li"> <p> Conversando com {{ selectedFriend._id2 }} </p></li>
+                <li v-else class="topbar-item-li"> <p> Conversando com {{ selectedFriend.user[0].nome }} </p></li>
             </ul>
             <div id="messages">
                 <div v-for="(item, index) in messages" :key="index" class="message">
@@ -68,17 +68,17 @@ Vue.component('listachat', {
     },
     created(){
         self = this;
-        this.socket.emit('join', {nome: this.myname});
+        this.socket.emit('join', {_id: this.me});
     },
     mounted(){
         axios.get('/channel/getFriends?me='+this.me, ).then(function(response){
             self.friends = response.data;
+            self.selectedFriend = response.data[0];
         });
         axios.get('/channel/getGroups?me='+this.me, ).then(function(response){
             self.groups = response.data;
         });
         this.socket.on('receiveMessage', this.receiveMessage);
-        //this.socket.on('onlineUsers', this.Users);
     },
     destroyed(){
         this.socket.emit('disconnect', this.from);
@@ -100,7 +100,7 @@ Vue.component('listachat', {
         },
         createMsgObj() {
             return {
-                fromUserId: this.myname,
+                fromUserId: this.me,
                 to: this.selectedFriend._id2,
                 message: this.message
             }

@@ -7,13 +7,11 @@ var userssocket = {};
 io.on('connection', function(socket){
     console.log('O maot é um vagabundo');
     socket.on('join', function(data){
-        userssocket[data.nome] = socket;
+        userssocket[data._id] = socket;
     });
     socket.on('disconnect', function(){
     });
     socket.on('sendMessageF', function(data){
-        console.log(userssocket);
-        console.log(data.to);
         userssocket[data.to].emit("receiveMessage", data)
         /*for (var key in groups[data.to]){
             userssocket[key].emit("receiveMessage", {fromUsername: userson[data.fromUserId].user, to: data.to, message: data.message});
