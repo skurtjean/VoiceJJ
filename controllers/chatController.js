@@ -77,7 +77,7 @@ router.get('/getFriends', function(req, res){
 });
 router.get('/getGroups', function(req, res){
     me = req.query.me;
-    let cursor = req.app.locals.banco.collection('friends').find( {"_id1": me, "type": 2}).toArray((err, results) => {
+    let cursor = req.app.locals.banco.collection('friends').find( {"_id1": new ObjectId(me), "type": 2}).toArray((err, results) => {
         res.json(results);
     });
 });

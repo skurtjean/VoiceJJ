@@ -74,8 +74,6 @@ module.exports = __webpack_require__(1);
 /* 1 */
 /***/ (function(module, exports) {
 
-function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
-
 window.Vue = Vue;
 
 window.axios = axios;
@@ -85,32 +83,32 @@ window.sock = io('localhost:9001');
 Vue.use(axios);
 
 Vue.component('listachat', {
-    template: ' \n    <div>\n        <div class="userlist" id="listausers">\n            <div id="friends" v-if="list == \'User\'">\n                <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">\n                    <p>Usu\xE1rios Online</p>\n                </div>\n                <div class="list-users" id="list-users">\n                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item._id2}}</a>\n                </div>\n            </div>\n            <div id="groups" v-else>\n                <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">\n                    <p>Grupos</p>\n                </div>\n                <div class="list-groups" id="list-groups">\n                    <a class="groupnalista" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>\n                </div>\n            </div>\n            <button data-target="modal1" class="btn btn-inicio modal-trigger">Adicionar amigo</button>\n            <br>\n            <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>\n        </div>\n\n\n        <div class="chat" id="container-chat">\n            <ul class="topbar" id="topbar">\n                <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">\uD83D\uDCF9 </a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">\uD83D\uDCDE</a></li>-->\n                <li v-if="selectedFriend.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedFriend._id2 }} </p></li>\n                <li v-else class="topbar-item-li"> <p> Conversando com {{ selectedFriend._id2 }} </p></li>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>\n    </div>',
+    template: ' \n    <div>\n        <div class="userlist" id="listausers">\n            <div id="friends" v-if="list == \'User\'">\n                <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">\n                    <p>Usu\xE1rios Online</p>\n                </div>\n                <div class="list-users" id="list-users">\n                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>\n                </div>\n            </div>\n            <div id="groups" v-else>\n                <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">\n                    <p>Grupos</p>\n                </div>\n                <div class="list-groups" id="list-groups">\n                    <a class="groupnalista" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>\n                </div>\n            </div>\n            <button data-target="modal1" class="btn btn-inicio modal-trigger">Adicionar amigo</button>\n            <br>\n            <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>\n        </div>\n\n\n        <div class="chat" id="container-chat" v-if="selectedChat !== undefined">\n            <ul class="topbar" id="topbar">\n                <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">\uD83D\uDCF9 </a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">\uD83D\uDCDE</a></li>-->\n                <li v-if="selectedChat.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedChat._id2 }} </p></li>\n                <li v-else-if="selectedChat.type == 1" class="topbar-item-li"> <p> Conversando com {{ selectedChat.user[0].nome }} </p></li>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>\n    </div>',
     props: { 'me': String, 'myname': String },
     data: function data() {
-        var _ref;
-
-        return _ref = {
+        return {
             friends: [],
             groups: [],
             socket: sock,
             message: '',
-            messages: []
-        }, _defineProperty(_ref, 'socket', sock), _defineProperty(_ref, 'selectedFriend', {}), _defineProperty(_ref, 'list', "User"), _ref;
+            messages: [],
+            selectedChat: { _id: '', _id1: '', _id2: '', type: 1 },
+            list: "User"
+        };
     },
     created: function created() {
         self = this;
-        this.socket.emit('join', { nome: this.myname });
+        this.socket.emit('join', { _id: this.me });
     },
     mounted: function mounted() {
         axios.get('/channel/getFriends?me=' + this.me).then(function (response) {
             self.friends = response.data;
+            self.selectedChat = response.data[0];
         });
         axios.get('/channel/getGroups?me=' + this.me).then(function (response) {
             self.groups = response.data;
         });
         this.socket.on('receiveMessage', this.receiveMessage);
-        //this.socket.on('onlineUsers', this.Users);
     },
     destroyed: function destroyed() {
         this.socket.emit('disconnect', this.from);
@@ -120,9 +118,12 @@ Vue.component('listachat', {
         sendMessage: function sendMessage() {
             if (this.message.trim().length > 0) {
                 var messagePackage = this.createMsgObj(this.message);
-                this.socket.emit('sendMessageF', messagePackage);
+                if (this.selectedChat.type == 1) {
+                    this.socket.emit('sendMessageF', messagePackage);
+                } else {
+                    this.socket.emit('sendMessageG', messagePackage);
+                }
                 this.message = "";
-                receiveMessage(messagePackage.message);
             } else {
                 alert("Digite algo antes de enviar :)");
             }
@@ -131,11 +132,11 @@ Vue.component('listachat', {
             this.messages.push(msg);
             this.scrollToBottom();
         },
-        createMsgObj: function createMsgObj() {
+        createMsgObj: function createMsgObj(message) {
             return {
-                fromUserId: this.myname,
-                to: this.selectedFriend._id2,
-                message: this.message
+                fromUserId: this.me,
+                to: this.selectedChat._id2,
+                message: message
             };
         },
         scrollToBottom: function scrollToBottom() {
@@ -151,10 +152,12 @@ Vue.component('listachat', {
             }
         },
         changeChatF: function changeChatF(id) {
-            this.selectedFriend = this.friends[id];
+            this.selectedChat = this.friends[id];
         },
         changeChatG: function changeChatG(id) {
-            this.selectedFriend = this.groups[id];
+            this.selectedChat = this.groups[id];
+            var messagePackage = this.createMsgObj('O cara entrou aqui mano');
+            this.socket.emit('joinG', messagePackage);
         }
     }
 });

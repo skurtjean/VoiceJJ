@@ -32,12 +32,12 @@ Vue.component('listachat', {
         </div>
 
 
-        <div class="chat" id="container-chat">
+        <div class="chat" id="container-chat" v-if="selectedChat !== undefined">
             <ul class="topbar" id="topbar">
                 <!--<li class="topbar-item-li"> <a class="topbar-item" id="video-call">📹 </a></li>
                 <li class="topbar-item-li"> <a class="topbar-item" id="audio-call">📞</a></li>-->
-                <li v-if="selectedFriend.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedFriend._id2 }} </p></li>
-                <li v-else class="topbar-item-li"> <p> Conversando com {{ selectedFriend.user[0].nome }} </p></li>
+                <li v-if="selectedChat.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedChat._id2 }} </p></li>
+                <li v-else-if="selectedChat.type == 1" class="topbar-item-li"> <p> Conversando com {{ selectedChat.user[0].nome }} </p></li>
             </ul>
             <div id="messages">
                 <div v-for="(item, index) in messages" :key="index" class="message">
@@ -61,8 +61,7 @@ Vue.component('listachat', {
             socket: sock,
             message: '',
             messages: [],
-            socket: sock,
-            selectedFriend: {},
+            selectedChat: { _id: '', _id1: '', _id2: '', type: 1 },
             list: "User",
         }
     },
@@ -73,7 +72,7 @@ Vue.component('listachat', {
     mounted(){
         axios.get('/channel/getFriends?me='+this.me, ).then(function(response){
             self.friends = response.data;
-            self.selectedFriend = response.data[0];
+            self.selectedChat = response.data[0];
         });
         axios.get('/channel/getGroups?me='+this.me, ).then(function(response){
             self.groups = response.data;
@@ -87,9 +86,13 @@ Vue.component('listachat', {
         sendMessage() {
             if (this.message.trim().length > 0) {
                 let messagePackage = this.createMsgObj(this.message);
-                this.socket.emit('sendMessageF', messagePackage);
+                if(this.selectedChat.type == 1){
+                    this.socket.emit('sendMessageF', messagePackage);
+                }
+                else{
+                    this.socket.emit('sendMessageG', messagePackage);
+                }
                 this.message = "";
-                receiveMessage(messagePackage.message);
             }else{
                 alert("Digite algo antes de enviar :)");
             }
@@ -98,11 +101,11 @@ Vue.component('listachat', {
             this.messages.push(msg);
             this.scrollToBottom();
         },
-        createMsgObj() {
+        createMsgObj(message) {
             return {
                 fromUserId: this.me,
-                to: this.selectedFriend._id2,
-                message: this.message
+                to: this.selectedChat._id2,
+                message: message
             }
         },
         scrollToBottom() {
@@ -119,10 +122,12 @@ Vue.component('listachat', {
             }
         },
         changeChatF(id) {
-            this.selectedFriend = this.friends[id];
+            this.selectedChat = this.friends[id];
         },
         changeChatG(id) {
-            this.selectedFriend = this.groups[id];
+            this.selectedChat = this.groups[id];
+            let messagePackage = this.createMsgObj('O cara entrou aqui mano');
+            this.socket.emit('joinG', messagePackage);
         }
     }
 });
