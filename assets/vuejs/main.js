@@ -2,39 +2,7 @@ window.Vue = Vue;
 
 window.axios = axios;
 
-window.sock = io('localhost:9001');
-
-window.peer = peer = new Peer(
-    '{{ me }}', {
-      host: 'localhost',
-      port: 9000,
-      path: '/peerjs',
-      config: {
-        'iceServers': [{
-            urls: 'stun:stun.l.google.com:19302'
-          },
-          {
-            urls: 'stun:stunserver.org'
-          },
-          {
-            urls: 'turn:numb.viagenie.ca',
-            credential: 'muazkh',
-            username: 'webrtc@live.com'
-          },
-          {
-            urls: 'turn:192.158.29.39:3478?transport=udp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-          },
-          {
-            urls: 'turn:192.158.29.39:3478?transport=tcp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-          }
-        ]
-      }
-    }
-  );
+window.sock = io(window.location.hostname+':9001', {secure: true});
 
 Vue.use(axios)
 
@@ -63,7 +31,7 @@ Vue.component('listachat', {
             <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>
         </div>
 
-
+        <audio hidden></audio>
         <div class="chat" id="container-chat" v-if="selectedChat !== undefined">
             <ul class="topbar" id="topbar">
                 <li class="topbar-item-li"> <a class="topbar-item" @click="startCall('video')" id="video-call">📹</a></li>
@@ -95,7 +63,18 @@ Vue.component('listachat', {
             messages: [],
             selectedChat: { _id: '', _id1: '', _id2: '', type: 1 },
             list: "User",
-            p: peer,
+            p: new Peer( this.me , {
+                  host: window.location.hostname,
+                  port: 9000,
+                  path: '/peerjs',
+                  config: {
+                    'iceServers': [{
+                        urls: 'stun:stun.l.google.com:19302'
+                      }
+                    ]
+                  }
+                }
+              ),
             call: '',
         }
     },
@@ -113,7 +92,7 @@ Vue.component('listachat', {
         });
         this.socket.on('receiveMessage', this.receiveMessage);
         this.p.on('open', console.log("Abriu"));
-        this.p.on('call', onReceiveCall => (call));
+        this.p.on('call', this.onReceiveCall);
     },
     destroyed(){
         this.socket.emit('disconnect', this.from);
@@ -167,8 +146,12 @@ Vue.component('listachat', {
         },
         startCall(type){
             if(this.selectedChat.type == 1){
-                this.call = this.p.call(this.selectedChat._id2, MediaStream);
-                this.call.on('stream', onReceiveStream);
+                this.getAudio(function (MediaStream) {
+                    self.call = self.p.call(self.selectedChat._id2, MediaStream);
+                    self.call.on('stream', onReceiveStream);
+                }, function (err) {
+                    console.log('Um erro ocorreu ao recuperar seu aúdio');
+                })
             }
             else{
                 data = { to: this.selectedChat._id2, me: this.me, type: this.selectedChat.type };
@@ -184,7 +167,7 @@ Vue.component('listachat', {
                 aceitou = true;
             }
             if (aceitou) {
-                getAudio(
+                this.getAudio(
                     function (MediaStream) {
                     call.answer(MediaStream);
                     },
@@ -199,15 +182,15 @@ Vue.component('listachat', {
             call.on('stream', onReceiveStream);
         },
         getAudio(successCallback, errorCallback) {
-            navigator.getUserMedia({
+            navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: false
-            }, successCallback, errorCallback);
+            }).then(successCallback).catch(errorCallback);
         },
         onReceiveStream(stream) {
-            document.body.innerHTML += "<audio></audio>"
             var audio = document.querySelector('audio');
             audio.srcObject = stream;
+            console.log(audio);
             audio.onloadedmetadata = function (e) {
                 audio.play();
             }

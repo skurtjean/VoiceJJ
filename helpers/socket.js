@@ -1,7 +1,17 @@
 const express           = require('express')
+const fs 				= require("fs")
 const app               = express()
-const http              = require('http').Server(app);
-const io                = require('socket.io')(http);
+const https             = require('https')
+
+var privateKey = fs.readFileSync('.ssl/private.key').toString();
+var certificate = fs.readFileSync('.ssl/certificate.crt').toString();
+
+var credentials = {key: privateKey, cert: certificate};
+
+
+const server            = https.createServer(credentials, app);
+const io                = require('socket.io')(server);
+
 var userssocket = {};
 var groupAudio = [];
 var groupVideo = [];
@@ -37,6 +47,6 @@ io.on('connection', function(socket){
     })
 });
 
-http.listen(9001, function(){
+server.listen(9001, function(){
     console.log('Socket');
 });

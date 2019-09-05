@@ -78,37 +78,12 @@ window.Vue = Vue;
 
 window.axios = axios;
 
-window.sock = io('localhost:9001');
-
-window.peer = peer = new Peer('{{ me }}', {
-    host: 'localhost',
-    port: 9000,
-    path: '/peerjs',
-    config: {
-        'iceServers': [{
-            urls: 'stun:stun.l.google.com:19302'
-        }, {
-            urls: 'stun:stunserver.org'
-        }, {
-            urls: 'turn:numb.viagenie.ca',
-            credential: 'muazkh',
-            username: 'webrtc@live.com'
-        }, {
-            urls: 'turn:192.158.29.39:3478?transport=udp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-        }, {
-            urls: 'turn:192.158.29.39:3478?transport=tcp',
-            credential: 'JZEOEt2V3Qb0y27GRntt2u2PAYA=',
-            username: '28224511:1379330808'
-        }]
-    }
-});
+window.sock = io(window.location.hostname + ':9001', { secure: true });
 
 Vue.use(axios);
 
 Vue.component('listachat', {
-    template: ' \n    <div>\n        <div class="userlist" id="listausers">\n            <div id="friends" v-if="list == \'User\'">\n                <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">\n                    <p>Usu\xE1rios Online</p>\n                </div>\n                <div class="list-users" id="list-users">\n                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>\n                </div>\n            </div>\n            <div id="groups" v-else>\n                <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">\n                    <p>Grupos</p>\n                </div>\n                <div class="list-groups" id="list-groups">\n                    <a class="groupnalista" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>\n                </div>\n            </div>\n            <button data-target="modal1" class="btn btn-inicio modal-trigger">Adicionar amigo</button>\n            <br>\n            <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>\n        </div>\n\n\n        <div class="chat" id="container-chat" v-if="selectedChat !== undefined">\n            <ul class="topbar" id="topbar">\n                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall(\'video\')" id="video-call">\uD83D\uDCF9</a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall(\'audio\')" id="audio-call">\uD83D\uDCDE</a></li>\n                <li v-if="selectedChat.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedChat._id2 }} </p></li>\n                <li v-else-if="selectedChat.type == 1" class="topbar-item-li"> <p> Conversando com {{ selectedChat.user[0].nome }} </p></li>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>\n    </div>',
+    template: ' \n    <div>\n        <div class="userlist" id="listausers">\n            <div id="friends" v-if="list == \'User\'">\n                <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">\n                    <p>Usu\xE1rios Online</p>\n                </div>\n                <div class="list-users" id="list-users">\n                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>\n                </div>\n            </div>\n            <div id="groups" v-else>\n                <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">\n                    <p>Grupos</p>\n                </div>\n                <div class="list-groups" id="list-groups">\n                    <a class="groupnalista" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>\n                </div>\n            </div>\n            <button data-target="modal1" class="btn btn-inicio modal-trigger">Adicionar amigo</button>\n            <br>\n            <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>\n        </div>\n\n        <audio hidden></audio>\n        <div class="chat" id="container-chat" v-if="selectedChat !== undefined">\n            <ul class="topbar" id="topbar">\n                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall(\'video\')" id="video-call">\uD83D\uDCF9</a></li>\n                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall(\'audio\')" id="audio-call">\uD83D\uDCDE</a></li>\n                <li v-if="selectedChat.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedChat._id2 }} </p></li>\n                <li v-else-if="selectedChat.type == 1" class="topbar-item-li"> <p> Conversando com {{ selectedChat.user[0].nome }} </p></li>\n            </ul>\n            <div id="messages">\n                <div v-for="(item, index) in messages" :key="index" class="message">\n                    <div class="autor">{{ item.fromUsername }}</div>\n                    <div class="messagebody">{{ item.message }}</div>\n                    <hr class="sepadadormensagem">\n                </div>\n            </div>\n            <p class="digitando"> O corno est\xE1 digitando </p>\n            <div class="container">\n                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>\n                <button @click="sendMessage" class="enviarmensagem" id="send">\u21A9</button>\n            </div>\n        </div>\n    </div>',
     props: { 'me': String, 'myname': String },
     data: function data() {
         return {
@@ -119,7 +94,16 @@ Vue.component('listachat', {
             messages: [],
             selectedChat: { _id: '', _id1: '', _id2: '', type: 1 },
             list: "User",
-            p: peer,
+            p: new Peer(this.me, {
+                host: window.location.hostname,
+                port: 9000,
+                path: '/peerjs',
+                config: {
+                    'iceServers': [{
+                        urls: 'stun:stun.l.google.com:19302'
+                    }]
+                }
+            }),
             call: ''
         };
     },
@@ -137,9 +121,7 @@ Vue.component('listachat', {
         });
         this.socket.on('receiveMessage', this.receiveMessage);
         this.p.on('open', console.log("Abriu"));
-        this.p.on('call', function (onReceiveCall) {
-            return call;
-        });
+        this.p.on('call', this.onReceiveCall);
     },
     destroyed: function destroyed() {
         this.socket.emit('disconnect', this.from);
@@ -192,8 +174,12 @@ Vue.component('listachat', {
         },
         startCall: function startCall(type) {
             if (this.selectedChat.type == 1) {
-                this.call = this.p.call(this.selectedChat._id2, MediaStream);
-                this.call.on('stream', onReceiveStream);
+                this.getAudio(function (MediaStream) {
+                    self.call = self.p.call(self.selectedChat._id2, MediaStream);
+                    self.call.on('stream', onReceiveStream);
+                }, function (err) {
+                    console.log('Um erro ocorreu ao recuperar seu aúdio');
+                });
             } else {
                 data = { to: this.selectedChat._id2, me: this.me, type: this.selectedChat.type };
                 this.socket.emit('join' + type, data);
@@ -207,7 +193,7 @@ Vue.component('listachat', {
                 aceitou = true;
             }
             if (aceitou) {
-                getAudio(function (MediaStream) {
+                this.getAudio(function (MediaStream) {
                     call.answer(MediaStream);
                 }, function (err) {
                     console.log(err);
@@ -218,15 +204,15 @@ Vue.component('listachat', {
             call.on('stream', onReceiveStream);
         },
         getAudio: function getAudio(successCallback, errorCallback) {
-            navigator.getUserMedia({
+            navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: false
-            }, successCallback, errorCallback);
+            }).then(successCallback).catch(errorCallback);
         },
         onReceiveStream: function onReceiveStream(stream) {
-            document.body.innerHTML += "<audio></audio>";
             var audio = document.querySelector('audio');
             audio.srcObject = stream;
+            console.log(audio);
             audio.onloadedmetadata = function (e) {
                 audio.play();
             };

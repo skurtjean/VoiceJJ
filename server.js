@@ -1,13 +1,21 @@
 const express           = require('express')
 const path              = require('path')
+const fs 				= require("fs")
 const nunjucks          = require('nunjucks')
+const serveIndex 		= require('serve-index');
 const bodyparser        = require('body-parser')
 const app               = express()
+const https				= require('https')
 const session           = require('express-session')
 const flash             = require('connect-flash')
 const mongodb           = require('mongodb').MongoClient
 const crypto 			= require('crypto');
 const request           = require('request')
+
+var privateKey = fs.readFileSync('.ssl/private.key').toString();
+var certificate = fs.readFileSync('.ssl/certificate.crt').toString();
+
+var credentials = {key: privateKey, cert: certificate};
 /*
 app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "http://vps13171.publiccloud.com.br");
@@ -26,17 +34,6 @@ const stringDB = "mongodb://admin:VoiceJJ%40@vps13171.publiccloud.com.br/admin";
 const DB   = 'admin'
 
 let db
-
-mongodb.connect(stringDB, {
-	useNewUrlParser: true
-} , (err, client) => {
-    if (err) return console.log(err);
-    db = client.db(DB);    
-    app.listen(80, function(){
-        console.log('Express');
-	});
-	app.locals.banco = db;
-});
 
 app.use(session({
 	secret: 'Voicejj',
@@ -70,3 +67,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/', genericRouterController)
 app.use('/user', usuarioController)
 app.use('/channel', chatController)
+
+server = https.createServer(credentials, app)
+
+mongodb.connect(stringDB, {
+	useNewUrlParser: true
+} , (err, client) => {
+    if (err) return console.log(err);
+    db = client.db(DB);    
+    server.listen(443, function(){
+        console.log('Express');
+	});
+	app.locals.banco = db;
+});
