@@ -3,223 +3,50 @@
   src: url('../font.ttf');
 }
 body {
-	background-color: #00cc99;
-	left: 0;
-	top: 0;
-	color: white;
+	background-color: #f1f1f1;
+	color: rgb(77, 77, 77);
 	height: 100%;
 	font-family: 'product';
 	overflow: hidden;
 	height:100vh;
 	width: 100vw;
-	margin: 0px 0px 0px 0px;
-}
-.grande {
-	font-size: 72px;
-	text-align: center;
-	color: #FFFFFF;
-	text-shadow: 2px 2px #000000
-}
-.btn-inicio {
-	color: #FFFFFF;
-	background-color: #3CBC8D;
-	border: solid #FFFFFF 3px;
-	border-radius: 4px;
-	padding-top: 10px;
-	padding-bottom: 8px;
-	padding-left: 15px;
-	padding-right: 15px;
-	margin-top: 5px;
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-bottom: 5px;
-	transition: background-color 0.5s;
-}
-.btn-inicio:hover {
-	cursor: pointer;
-	background-color: rgb(130, 238, 198);
-}
-.btn-inicio:link {
-	cursor: pointer;
-	color: #FFFFFF;
-	background-color: rgb(130, 238, 198);
-}
-:link {
-	color: rgb(129, 187, 117);
-	text-decoration: none;
-}
-input[type=text], input[type=password] {
-	background-color: #3CBC8D;
-	color: white;
-	border-color: #FFFFFF;
-	border: solid 2px;
-	border-radius: 4px;
-	padding-top: 10px;
-	padding-bottom: 8px;
-	padding-left: 15px;
-	padding-right: 15px;
-	margin-right: 10px;
-	margin-top: 5px;
-	margin-bottom: 5px;
-	transition: background-color 0.5s;
-}
-input[type=text]:hover, input[type=password]:hover {
-	background-color: rgb(92, 190, 154);
-}
-p {
-	color: #ffffff;
-}
-
-.chat {
-	margin-left: 240px;
-	height: 100%;
-	border-left: 1px solid white;
-	overflow-y:auto;
-	overflow-x: hidden;
-}
-.topbar {  
-	list-style-type: none;
-  	margin: 0px;
-  	padding-left: 15px;
-  	overflow: hidden;
-  	position: absolute;
-	top: 0;
-	height: 53px;
-  	width: 100%;
-	background-color: #028363;
-	align-content: right;
-	color: white;
-}
-.topbar-item-li {
-	float: left;
-}
-.topbar-item {
-	display: block;
-	color: #FFFFFF;
-	background-color: #3CBC8D;
-	border: solid #FFFFFF 3px;
-	border-radius: 4px;
-	margin-top: 5px;
-	margin-right: 8px;
-	margin-left: 8px;
-	margin-bottom: 5px;
-	border-radius: 4px;
-	padding-top: 10px;
-	padding-bottom: 8px;
-	padding-left: 15px;
-	padding-right: 15px;
-	transition: background-color 0.5s;
-  	text-decoration: none;
-}
-.topbar-item:hover {
-	cursor: pointer;
-	background-color: rgb(130, 238, 198);
-}
-#messages {
-	margin-top: 72px;
-	background-color: #4dd49c;
-	border: solid rgb(216, 226, 186) 3px;
-	height: 65vh;
-	overflow-y: scroll;
-	padding-left: 10px;
-	margin-left: 10px;
-}
-.autor {
-	color: #756e6e;
-}
-.container {
-	display:table;
-	width:100%;
-	margin-left: 10px;
+	margin: 0px;
+	padding: 0;
 }
 .textochat {
-	background-color: #3CBC8D;
-	font-family: 'product';
-	font-size: 12px;
-	float: left;
-	display: table-cell;
-	width:88%;
-	color: white;
-	border-color: #FFFFFF;
-	border: solid 2px;
-	border-radius: 4px;
-	padding-top: 10px;
-	padding-bottom: 8px;
-	padding-left: 15px;
-	padding-right: 15px;
-	margin-right: 10px;
-	margin-top: 5px;
-	resize: none;
-	margin-bottom: 5px;
-	transition: background-color 0.5s;
-	text-shadow: #000000 1px 1px 1px;
-}
-.enviarmensagem {
-	float:right;
-	display: table-cell;
-	color: #FFFFFF;
-	background-color: #3CBC8D;
-	border: solid #FFFFFF 3px;
-	border-radius: 4px;
-	padding-top: 10px;
-	padding-bottom: 8px;
-	padding-left: 15px;
-	padding-right: 15px;
-	margin-top: 5px;
-	margin-left: 15px;
-	margin-right: 15px;
-	margin-bottom: 5px;
-	transition: background-color 0.5s;
-}
-.enviarmensagem:hover {
-	cursor: pointer;
-	background-color: rgb(130, 238, 198);
-}
-.digitando {
-	padding-left: 15px;
-}
-.userlist {
-	margin-top: 72px;
-	float: left;
-	overflow:auto;
-	width: 240px;
-	top:0;
-	left:0;
-}
-.tituloUserList {
-	list-style-type: none;
-	top: 0;
-	left:0;
-	height: 53px;
-	text-align: center;
-  	overflow: hidden;
-	position: fixed;
-	width:248px;
-	background-color: #115a48;
-	align-content: right;
-	color: white;
-}
-.usernalista {
-	text-decoration: none;
-	display: block;
-	width:215px;
-	padding-top: 15px;
-	padding-bottom: 15px;
-	padding-left: 15px;
-	margin-right: 10px;
-	margin-bottom: 8px;
-	border: solid transparent;
+	width: 100%;
+	background-color: #c9c3c3;
 	border-radius: 5px;
+	padding-right: 7px;
+	padding-left: 7px;
+	padding-top:4px;
+	padding-bottom: 4px;
+	height: 50px;
+	border: none;
+	resize: none;
+}
+nav {
+	padding-left: 10px;
+	padding-right: 10px;}
+.btngp {
+	padding-left: 10px;
+	padding-right: 10px;
+	padding-top: 3px;
+	padding-right: 2px;
+	width: 100%;
+}
+.contmessages {
+	height: calc(100vh - 200px);
+	overflow-y:auto;
 }
 .list-users {
-	list-style-type: none;
-	left: 0;
+	height: calc(100vh - 200px);
+	overflow-y:auto;
 }
-.usernalista:hover {
-	cursor: pointer;
-	background-color: rgb(130, 238, 198);
+.list-groups {
+	height: calc(100vh - 200px);
+	overflow-y:auto;
 }
-.usernalista:active {
-	cursor: pointer;
-	background-color: rgb(2, 202, 129);
+.posloader {
+	display: none;
 }

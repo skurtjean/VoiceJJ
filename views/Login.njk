@@ -1,14 +1,14 @@
 {% extends "layouts/master.njk"%}
 {% block content%}
-    <center>
+<div class="row">
+    <div class="col s4 offset-s4">
         <form action="logar" method="POST">
-            <h1 class="grande">Login</h1>
+            <h1 class="center grande">Login</h1>
             {% if (error) %}
             <br>
             <span>E-mail e/ou senha incorretos</span>
             <br>
             {% endif %}
-            <p><font size="48px" >Insira o seu usuario e sua senha </font></p>
             <label for="user">E-mail: </label>
             <input type="text" id="email" name="email">
             <br>
@@ -16,7 +16,8 @@
             <input style="margin-top: 5px" type="password" id="pass" name="pass">
             <br>
             <br>
-            <button type="submit" class="btn-inicio" >Pronto</button>
+            <button type="submit" class="waves-effect waves-light btn">Pronto</button>
         </form>
-    </center>
+    </div>
+</div>
 {% endblock%}

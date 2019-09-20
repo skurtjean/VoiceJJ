@@ -1,5 +1,17 @@
 {% extends "layouts/master.njk" %}
   {% block content %}
+  <div class="preloader-wrapper big active">
+    <div class="spinner-layer spinner-blue-only">
+      <div class="circle-clipper left">
+        <div class="circle"></div>
+      </div><div class="gap-patch">
+        <div class="circle"></div>
+      </div><div class="circle-clipper right">
+        <div class="circle"></div>
+      </div>
+    </div>
+  </div>
+  <div class="posloader">
   <div id="app">
     <listachat me={{ me }} myname={{ myName }}></listachat>
   </div>
@@ -27,10 +39,14 @@
       <a href="#!" class="modal-close waves-effect waves-green btn-flat" id="group">Adicionar</a>
     </div>
   </div>
+  </div>
   {% endblock %}
   {% block js %}
     <script>
       $(document).ready(function(){
+
+        $(".preloader-wrapper").css("display", "none");
+        $(".posloader").css("display", "block");
         $('#modal1').modal()
         $('#modal2').modal()
         $('#friend').click(function(){

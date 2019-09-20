@@ -8,38 +8,48 @@ Vue.use(axios)
 
 Vue.component('listachat', {
     template: ` 
-    <div>
-        <div class="userlist" id="listausers">
+    <div class="row">
+        <div class="userlist col s3" id="listausers">
             <div id="friends" v-if="list == 'User'">
                 <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
-                    <p>Usuários Online</p>
+                    <a class="waves-effect waves-teal btn-flat">Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
-                <div class="list-users" id="list-users">
-                    <a class="usernalista" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
+                <div class="list-users collection" id="list-users">
+                    <a class="usernalista collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
                 </div>
             </div>
             <div id="groups" v-else>
                 <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
-                    <p>Grupos</p>
+                    <a class="waves-effect waves-teal btn-flat btngp">Grupos <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
-                <div class="list-groups" id="list-groups">
-                    <a class="groupnalista" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
+                <div class="list-groups collection" id="list-groups">
+                    <a class="groupnalista collection-item" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
                 </div>
             </div>
-            <button data-target="modal1" class="btn btn-inicio modal-trigger">Adicionar amigo</button>
-            <br>
-            <button data-target="modal2" class="btn btn-inicio modal-trigger">Criar ou entrar em um grupo</button>
+            <div class="center row">
+            <button data-target="modal1" class="waves-effect waves-light btn modal-trigger">Adicionar amigo</button>
+            </div>
+            <div class="center row">
+            <button data-target="modal2" class="waves-effect waves-light btn modal-trigger">Criar ou entrar em um grupo</button>
+            </div>
         </div>
 
         <audio hidden></audio>
-        <div class="chat" id="container-chat" v-if="selectedChat !== undefined">
-            <ul class="topbar" id="topbar">
-                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall('video')" id="video-call">📹</a></li>
-                <li class="topbar-item-li"> <a class="topbar-item" @click="startCall('audio')" id="audio-call">📞</a></li>
-                <li v-if="selectedChat.type == 2" class="topbar-item-li"> <p> Conversando no grupo {{ selectedChat._id2 }} </p></li>
-                <li v-else-if="selectedChat.type == 1" class="topbar-item-li"> <p> Conversando com {{ selectedChat.user[0].nome }} </p></li>
-            </ul>
-            <div id="messages">
+        <div class="col s9" v-if="selectedChat == undefined"> Selecione um chat ou grupo para começar a conversar...</div>
+        <div class="chat col s9" id="container-chat" v-if="selectedChat !== undefined">
+        <nav class="grey">
+            <div class="nav-wrapper">
+            <ul>
+                <li v-if="selectedChat.type == 2"> Conversando no grupo {{ selectedChat._id2 }} </li>
+                <li v-else-if="selectedChat.type == 1"> Conversando com {{ selectedChat.user[0].nome }} </li>
+              </ul>  
+                <ul class="right hide-on-med-and-down" id="topbar">
+                    <li> <a class="topbar-item" @click="startCall('video')" id="video-call">📹</a></li>
+                    <li> <a class="topbar-item" @click="startCall('audio')" id="audio-call">📞</a></li>
+                </ul>
+            </div>
+        </nav>
+            <div class="contmessages" id="messages">
                 <div v-for="(item, index) in messages" :key="index" class="message">
                     <div class="autor">{{ item.fromUsername }}</div>
                     <div class="messagebody">{{ item.message }}</div>
@@ -47,9 +57,9 @@ Vue.component('listachat', {
                 </div>
             </div>
             <p class="digitando"> O corno está digitando </p>
-            <div class="container">
-                <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea>
-                <button @click="sendMessage" class="enviarmensagem" id="send">↩</button>
+            <div class="row">
+                <div class="col s11"> <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea></div>
+                <div class="col s1"><button @click="sendMessage" class="waves-effect waves-teal btn-flat enviarmensagem" id="send"><i class="material-icons">send</i></button></div>
             </div>
         </div>
     </div>`,

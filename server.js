@@ -6,10 +6,11 @@ const serveIndex 		= require('serve-index');
 const bodyparser        = require('body-parser')
 const app               = express()
 const https				= require('https')
+const http				= require('http')
 const session           = require('express-session')
 const flash             = require('connect-flash')
 const mongodb           = require('mongodb').MongoClient
-const crypto 			= require('crypto');
+const crypto 			= require('crypto')
 const request           = require('request')
 
 var privateKey = fs.readFileSync('.ssl/private.key').toString();
@@ -69,6 +70,7 @@ app.use('/user', usuarioController)
 app.use('/channel', chatController)
 
 server = https.createServer(credentials, app)
+servernormal = http.createServer(app)
 
 mongodb.connect(stringDB, {
 	useNewUrlParser: true
@@ -77,6 +79,9 @@ mongodb.connect(stringDB, {
     db = client.db(DB);    
     server.listen(443, function(){
         console.log('Express');
+	});
+	servernormal.listen(80, function(){
+        console.log('Express porta 80');
 	});
 	app.locals.banco = db;
 });

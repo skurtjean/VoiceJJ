@@ -1,12 +1,12 @@
 {% extends "layouts/master.njk"%}
 {% block content%}
-    <center>
+<div class="row">
+    <div class="col s4 offset-s4">
         <form action="cadastrar" method="POST">
-            <h1 class="grande">Cadastro</h1>
+            <h1 class="center grande">Cadastro</h1>
             {% if errors[0] %}
                 <p>{{ errors[0].msg }}</p>
             {% endif %}
-            <p><font size="48px">Insira seu e-mail, um usuário e sua senha</font></p>
             <label for="email">E-mail: </label>
             <input type="text" id="email" name="email">
             <br>
@@ -17,7 +17,8 @@
             <input type="password" id="pass" name="pass">
             <br>
             <br>
-            <button type="submit" class="btn-inicio" >Pronto</button>
+            <button type="submit" class="waves-effect waves-light btn" >Pronto</button>
         </form>
-    </center>
+</div>
+</div>
 {% endblock%}
