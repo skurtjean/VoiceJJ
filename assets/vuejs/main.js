@@ -12,7 +12,7 @@ Vue.component('listachat', {
         <div class="userlist col s3" id="listausers">
             <div id="friends" v-if="list == 'User'">
                 <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
-                    <a class="waves-effect grey darken-2 white-text btn-flat btngp center" >Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
+                    <a class="waves-effect grey darken-2 white-text btn btngp center" >Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
                 <div class="list-users grey darken-2 collection" id="list-users">
                     <a class="usernalista grey darken-2 white-text collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
@@ -20,7 +20,7 @@ Vue.component('listachat', {
             </div>
             <div id="groups" v-else>
                 <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
-                    <a class="s12 waves-effect grey darken-2 white-text btn-flat btngp center">Grupos <i class="material-icons">swap_vertical_circle</i></a>
+                    <a class="s12 waves-effect grey darken-2 white-text btn btngp center">Grupos <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
                 <div class="list-groups grey darken-2 collection" id="list-groups">
                     <a class="groupnalista grey darken-2 white-text collection-item" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
