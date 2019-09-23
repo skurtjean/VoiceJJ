@@ -12,40 +12,40 @@ Vue.component('listachat', {
         <div class="userlist col s3" id="listausers">
             <div id="friends" v-if="list == 'User'">
                 <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
-                    <a class="waves-effect waves-teal btn-flat">Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
+                    <a class="waves-effect grey darken-2 white-text btn-flat btngp center" >Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
-                <div class="list-users collection" id="list-users">
-                    <a class="usernalista collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
+                <div class="list-users grey darken-2 collection" id="list-users">
+                    <a class="usernalista grey darken-2 white-text collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
                 </div>
             </div>
             <div id="groups" v-else>
                 <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
-                    <a class="waves-effect waves-teal btn-flat btngp">Grupos <i class="material-icons">swap_vertical_circle</i></a>
+                    <a class="s12 waves-effect grey darken-2 white-text btn-flat btngp center">Grupos <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
-                <div class="list-groups collection" id="list-groups">
-                    <a class="groupnalista collection-item" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
+                <div class="list-groups grey darken-2 collection" id="list-groups">
+                    <a class="groupnalista grey darken-2 white-text collection-item" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
                 </div>
             </div>
             <div class="center row">
-            <button data-target="modal1" class="waves-effect waves-light btn modal-trigger">Adicionar amigo</button>
+            <button data-target="modal1" class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Adicionar amigo</button>
             </div>
             <div class="center row">
-            <button data-target="modal2" class="waves-effect waves-light btn modal-trigger">Criar ou entrar em um grupo</button>
+            <button data-target="modal2" class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Criar ou entrar em um grupo</button>
             </div>
         </div>
 
         <audio hidden></audio>
-        <div class="col s9" v-if="selectedChat == undefined"> Selecione um chat ou grupo para começar a conversar...</div>
+        <div class="col s9 center-middle" v-if="selectedChat == undefined"> <p>Selecione um chat ou grupo para começar a conversar...</p></div>
         <div class="chat col s9" id="container-chat" v-if="selectedChat !== undefined">
-        <nav class="grey">
+        <nav class="grey darken-2 grey-text text-lighten-2">
             <div class="nav-wrapper">
             <ul>
                 <li v-if="selectedChat.type == 2"> Conversando no grupo {{ selectedChat._id2 }} </li>
                 <li v-else-if="selectedChat.type == 1"> Conversando com {{ selectedChat.user[0].nome }} </li>
               </ul>  
                 <ul class="right hide-on-med-and-down" id="topbar">
-                    <li> <a class="topbar-item" @click="startCall('video')" id="video-call">📹</a></li>
-                    <li> <a class="topbar-item" @click="startCall('audio')" id="audio-call">📞</a></li>
+                    <li> <a class="topbar-item" @click="startCall('video')" id="video-call"><i class="material-icons">video_call</i></a></li>
+                    <li> <a class="topbar-item" @click="startCall('audio')" id="audio-call"><i class="material-icons">phone</i></a></li>
                 </ul>
             </div>
         </nav>
@@ -59,7 +59,7 @@ Vue.component('listachat', {
             <p class="digitando"> O corno está digitando </p>
             <div class="row">
                 <div class="col s11"> <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea></div>
-                <div class="col s1"><button @click="sendMessage" class="waves-effect waves-teal btn-flat enviarmensagem" id="send"><i class="material-icons">send</i></button></div>
+                <div class="col s1"><button @click="sendMessage" class="white-text waves-effect waves-teal btn-flat btnsend enviarmensagem" id="send"><i class="material-icons">send</i></button></div>
             </div>
         </div>
     </div>`,
