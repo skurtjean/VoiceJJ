@@ -15,7 +15,7 @@ Vue.component('listachat', {
                     <a class="waves-effect grey darken-2 white-text btn btngp center" >Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
                 </div>
                 <div class="list-users grey darken-2 collection" id="list-users">
-                    <a class="usernalista grey darken-2 white-text collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
+                        <a class="usernalista grey darken-2 white-text collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
                 </div>
             </div>
             <div id="groups" v-else>
@@ -34,7 +34,9 @@ Vue.component('listachat', {
             </div>
         </div>
 
-        <audio hidden></audio>
+        <div hidden>
+            <audio v-for="(item,index) in voicess" :id="item"></audio>
+        </div>
         <div class="col s9 center-middle" v-if="selectedChat == undefined"> <p>Selecione um chat ou grupo para começar a conversar...</p></div>
         <div class="chat col s9" id="container-chat" v-if="selectedChat !== undefined">
         <nav class="grey darken-2 grey-text text-lighten-2">
@@ -73,19 +75,21 @@ Vue.component('listachat', {
             messages: [],
             selectedChat: { _id: '', _id1: '', _id2: '', type: 1 },
             list: "User",
+            voices: [],
+            voicess: [],
+            inCallGroup: false,
             p: new Peer( this.me , {
-                  host: window.location.hostname,
-                  port: 9000,
-                  path: '/peerjs',
-                  config: {
-                    'iceServers': [{
-                        urls: 'stun:stun.l.google.com:19302'
-                      }
-                    ]
-                  }
+                host: window.location.hostname,
+                port: 9000,
+                path: '/peerjs',
+                config: {
+                'iceServers': [{
+                    urls: 'stun:stun.l.google.com:19302'
+                    }
+                ]
                 }
-              ),
-            call: '',
+            }),
+            c: "",
         }
     },
     created(){
@@ -103,6 +107,7 @@ Vue.component('listachat', {
         this.socket.on('receiveMessage', this.receiveMessage);
         this.p.on('open', console.log("Abriu"));
         this.p.on('call', this.onReceiveCall);
+        this.socket.on('NewUserCall', this.addUserCall);
     },
     destroyed(){
         this.socket.emit('disconnect', this.from);
@@ -113,6 +118,7 @@ Vue.component('listachat', {
                 let messagePackage = this.createMsgObj(this.message);
                 if(this.selectedChat.type == 1){
                     this.socket.emit('sendMessageF', messagePackage);
+                    this.messages.push(messagePackage);
                 }
                 else{
                     this.socket.emit('sendMessageG', messagePackage);
@@ -157,15 +163,25 @@ Vue.component('listachat', {
         startCall(type){
             if(this.selectedChat.type == 1){
                 this.getAudio(function (MediaStream) {
-                    self.call = self.p.call(self.selectedChat._id2, MediaStream);
-                    self.call.on('stream', onReceiveStream);
+                    self.voicess.push(self.selectedChat._id2);
+                    self.voices.push(self.p.call(self.selectedChat._id2, MediaStream));
+                    self.voices[0].on('stream', self.onReceiveStream);
                 }, function (err) {
-                    console.log('Um erro ocorreu ao recuperar seu aúdio');
-                })
+                    console.log('Um erro ocorreu ao recuperar seu aúdio: '+err);
+                });
             }
             else{
                 data = { to: this.selectedChat._id2, me: this.me, type: this.selectedChat.type };
                 this.socket.emit('join'+type, data);
+                this.getAudio(function (MediaStream) {
+                    self.voicess.forEach(function(item, key){    
+                        self.voices.push(self.p.call(item, MediaStream));
+                        console.log(self.voices);
+                        self.voices[key].on('stream', self.onReceiveStream);
+                    });
+                }, function (err) {
+                    console.log('Um erro ocorreu ao recuperar seu aúdio: '+err);
+                });
             }
         },
         onReceiveCall(call) {
@@ -189,7 +205,8 @@ Vue.component('listachat', {
             else {
                 call.close();
             }
-            call.on('stream', onReceiveStream);
+            this.c = call.peer;
+            call.on('stream', this.onReceiveStream);
         },
         getAudio(successCallback, errorCallback) {
             navigator.mediaDevices.getUserMedia({
@@ -198,13 +215,25 @@ Vue.component('listachat', {
             }).then(successCallback).catch(errorCallback);
         },
         onReceiveStream(stream) {
-            var audio = document.querySelector('audio');
-            audio.srcObject = stream;
-            console.log(audio);
-            audio.onloadedmetadata = function (e) {
-                audio.play();
+            if(this.selectedChat.type == 1){
+                var audio = document.getElementById(this.selectedChat._id2);
+                audio.srcObject = stream;
+                audio.onloadedmetadata = function (e) {
+                    audio.play();
+                }
             }
-        }
+            else{
+                var audio = document.getElementById(self.c);
+                audio.srcObject = stream;
+                audio.onloadedmetadata = function (e) {
+                    audio.play();
+                }
+            }
+        },
+        addUserCall(users) {
+            this.voicess = users;
+            console.log(users);
+        },
     }
 });
 const app = new Vue({

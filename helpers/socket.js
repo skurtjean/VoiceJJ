@@ -24,15 +24,12 @@ io.on('connection', function(socket){
         socket.join(data.to);
         io.to(data.to).emit('receiveMessage', data);
     });
-    socket.on('joinAudio', function(data){
-        if(data.type == 2){
-            groupAudio[data.to].push(data.me);
-            io.to(data.to).emit('joinedAudio', groupAudio[data.to]);
+    socket.on('joinaudio', function(data){
+        if(groupAudio[data.to] == undefined){
+            groupAudio[data.to] = [];
         }
-        else{
-            user
-            userssocket[data.to].emit("joinedAudio", data.me);
-        }
+        groupAudio[data.to].push(data.me);
+        io.to(data.to).emit('NewUserCall', groupAudio[data.to]);
     });
     socket.on('joinVideo', function(data){
 
