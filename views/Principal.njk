@@ -15,7 +15,7 @@
   <div id="app">
     <listachat me={{ me }} myname={{ myName }}></listachat>
   </div>
-  <div id="modal1" class="modal">
+  <div id="modal1" class="modal darken-1 grey-text text-lighten-2">
     <div class="modal-content">
       <h4 style="color:#00cc99 !important">Adicionar amigo</h4>
       <br>
@@ -27,7 +27,7 @@
       <a href="#!" class="grey-text text-lighten-3 grey darken-2 modal-close waves-effect waves-green btn-flat" id="friend">Adicionar</a>
     </div>
   </div>
-  <div id="modal2" class="modal">
+  <div id="modal2" class="modal darken-1 grey-text text-lighten-2">
     <div class="modal-content">
       <h4 style="color:#00cc99 !important">Criar ou entrar em um grupo</h4>
       <br>
@@ -43,8 +43,11 @@
   {% endblock %}
   {% block js %}
     <script>
+    function sleep(ms) {   return new Promise(resolve => setTimeout(resolve, ms)); }
+    function arrumarAltura() {
+      $(".contmessages").css('height','100vh').css('height','-=' +  ( $(".topside").height() + $(".escrever").height())  +'')
+    }
       $(document).ready(function(){
-
         $(".preloader-wrapper").css("display", "none");
         $(".posloader").css("display", "block");
         $('#modal1').modal()
@@ -62,7 +65,7 @@
               }
             }
           });
-        });
+        });        
         $('#group').click(function(){
           $.ajax({
             url: "/channel/addGroup",

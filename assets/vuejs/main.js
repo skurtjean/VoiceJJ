@@ -9,62 +9,134 @@ Vue.use(axios)
 Vue.component('listachat', {
     template: ` 
     <div class="row">
-        <div class="userlist col s3" id="listausers">
-            <div id="friends" v-if="list == 'User'">
-                <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
-                    <a class="waves-effect grey darken-2 white-text btn btngp center" >Usuários Online <i class="material-icons">swap_vertical_circle</i></a>
-                </div>
-                <div class="list-users grey darken-2 collection" id="list-users">
-                        <a class="usernalista grey darken-2 white-text collection-item" v-for="(item, index) in friends" :key="index" :value="item._id2" v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
-                </div>
-            </div>
-            <div id="groups" v-else>
-                <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
-                    <a class="s12 waves-effect grey darken-2 white-text btn btngp center">Grupos <i class="material-icons">swap_vertical_circle</i></a>
-                </div>
-                <div class="list-groups grey darken-2 collection" id="list-groups">
-                    <a class="groupnalista grey darken-2 white-text collection-item" v-for="(item, index) in groups" :key="index" :value="item._id2" v-on:click="changeChatG(index)">{{item._id2}}</a>
-                </div>
-            </div>
-            <div class="center row">
-            <button data-target="modal1" class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Adicionar amigo</button>
-            </div>
-            <div class="center row">
-            <button data-target="modal2" class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Criar ou entrar em um grupo</button>
-            </div>
-        </div>
-
-        <div hidden>
-            <audio v-for="(item,index) in voicess" :id="item"></audio>
-        </div>
-        <div class="col s9 center-middle" v-if="selectedChat == undefined"> <p>Selecione um chat ou grupo para começar a conversar...</p></div>
-        <div class="chat col s9" id="container-chat" v-if="selectedChat !== undefined">
-        <nav class="grey darken-2 grey-text text-lighten-2">
-            <div class="nav-wrapper">
-            <ul>
-                <li v-if="selectedChat.type == 2"> Conversando no grupo {{ selectedChat._id2 }} </li>
-                <li v-else-if="selectedChat.type == 1"> Conversando com {{ selectedChat.user[0].nome }} </li>
-              </ul>  
-                <ul class="right hide-on-med-and-down" id="topbar">
-                    <li> <a class="topbar-item" @click="startCall('video')" id="video-call"><i class="material-icons">video_call</i></a></li>
-                    <li> <a class="topbar-item" @click="startCall('audio')" id="audio-call"><i class="material-icons">phone</i></a></li>
-                </ul>
-            </div>
-        </nav>
-            <div class="contmessages" id="messages">
-                <div v-for="(item, index) in messages" :key="index" class="message">
-                    <div class="autor">{{ item.fromUsername }}</div>
-                    <div class="messagebody">{{ item.message }}</div>
-                    <hr class="sepadadormensagem">
-                </div>
-            </div>
-            <p class="digitando"> O corno está digitando </p>
-            <div class="row">
-                <div class="col s11"> <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage" class="textochat" id="textbox"></textarea></div>
-                <div class="col s1"><button @click="sendMessage" class="white-text waves-effect waves-teal btn-flat btnsend enviarmensagem" id="send"><i class="material-icons">send</i></button></div>
-            </div>
-        </div>
-    </div>`,
+       <div hidden>
+           <audio v-for="(item,index) in voicess" :id="item"></audio>
+       </div>
+       <div class="col s12 center-middle" v-if="selectedChat == undefined">
+       <nav class="grey darken-1 grey-text text-lighten-2">
+               <div class="nav-wrapper">
+               <ul>
+               <li><a href="#" data-target="slide-out" class="show-on-medium-and-up sidenav-trigger"><i class="material-icons">menu</i></a>
+               </li>
+               </ul>
+               <ul id="slide-out" class="sidenav grey darken-1 grey-text text-lighten-2">
+                       <li>
+                           <div id="friends" v-if="list == 'User'">
+                               <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
+                                   <a class="waves-effect grey darken-2 white-text btngp center">Usuários Online <i
+                                           class="material-icons">swap_vertical_circle</i></a>
+                               </div>
+                               <div class="list-users grey darken-2 collection" id="list-users">
+                                   <a class="usernalista grey darken-2 white-text collection-item"
+                                       v-for="(item, index) in friends" :key="index" :value="item._id2"
+                                       v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
+                               </div>
+                           </div>
+                           <div id="groups" v-else>
+                               <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
+                                   <a class="s12 waves-effect grey darken-2 white-text btngp center">Grupos <i
+                                           class="material-icons">swap_vertical_circle</i></a>
+                               </div>
+                               <div class="list-groups grey darken-2 collection" id="list-groups">
+                                   <a class="groupnalista grey darken-2 white-text collection-item"
+                                       v-for="(item, index) in groups" :key="index" :value="item._id2"
+                                       v-on:click="changeChatG(index)">{{item._id2}}</a>
+                               </div>
+                           </div>
+                           <div class="center row">
+                               <button data-target="modal1"
+                                   class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Adicionar
+                                   amigo</button>
+                           </div>
+                           <div class="center row">
+                               <button data-target="modal2"
+                                   class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Criar
+                                   ou entrar em um grupo</button>
+                           </div>
+                       </li>
+                   </ul>
+               </div>
+           </nav>
+           <p>
+               Selecione um chat ou grupo para começar a conversar...</p>
+       </div>
+       <div class="chat col s12" id="container-chat" v-if="selectedChat !== undefined">
+       <div id="topside" onresize="arrumarAltura()" >
+            <ul class="collapsible grey darken-1 grey-text text-lighten-2">
+            <li>
+                <div class="collapsible-header grey darken-1 "><i class="material-icons">call</i>Em chamada de audio.....</div>
+                <div class="collapsible-body conteiner">ALOLAOALALOALALAOALAOOsd</div>
+            </li>
+            </ul>
+           <nav class="grey darken-1 grey-text text-lighten-2">
+               <div class="nav-wrapper">
+              <ul> <li><a href="#" data-target="slide-out" class="show-on-medium-and-up topbar-item sidenav-trigger"><i class="material-icons">menu</i></a></li>
+                   
+                       <li v-if="selectedChat.type == 2"> Conversando no grupo {{ selectedChat._id2 }} </li>
+                       <li v-else-if="selectedChat.type == 1"> Conversando com {{ selectedChat.user[0].nome }} </li>
+                   </ul>
+                   <ul class="right" id="topbar">
+                       <li> <a class="topbar-item" @click="startCall('video')" id="video-call"><i
+                                   class="material-icons">video_call</i></a></li>
+                       <li> <a class="topbar-item" @click="startCall('audio')" id="audio-call"><i
+                                   class="material-icons">phone</i></a></li>
+                   </ul>
+                   <ul id="slide-out" class="sidenav center-middle grey darken-1 grey-text text-lighten-2">
+                   <li>
+                       <div id="friends" v-if="list == 'User'">
+                           <div class="tituloUserList" id="userlisttitle" v-on:click="changeList()">
+                               <a class="waves-effect grey darken-2 white-text btngp center">Usuários Online <i
+                                       class="material-icons">swap_vertical_circle</i></a>
+                           </div>
+                           <div class="list-users grey darken-2 collection" id="list-users">
+                               <a class="usernalista grey darken-2 white-text collection-item"
+                                   v-for="(item, index) in friends" :key="index" :value="item._id2"
+                                   v-on:click="changeChatF(index)">{{item.user[0].nome}}</a>
+                           </div>
+                       </div>
+                       <div id="groups" v-else>
+                           <div class="tituloUserList" id="grouplisttitle" v-on:click="changeList()">
+                               <a class="s12 waves-effect grey darken-2 white-text btngp center">Grupos <i
+                                       class="material-icons">swap_vertical_circle</i></a>
+                           </div>
+                           <div class="list-groups grey darken-2 collection" id="list-groups">
+                               <a class="groupnalista grey darken-2 white-text collection-item"
+                                   v-for="(item, index) in groups" :key="index" :value="item._id2"
+                                   v-on:click="changeChatG(index)">{{item._id2}}</a>
+                           </div>
+                       </div>
+                       <div class="center row">
+                           <button data-target="modal1"
+                               class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Adicionar
+                               amigo</button>
+                       </div>
+                       <div class="center row">
+                           <button data-target="modal2"
+                               class="waves-effect grey darken-2 grey-text text-lighten-3 waves-light btn modal-trigger">Criar
+                               ou entrar em um grupo</button>
+                       </div>
+                   </li>
+               </ul>
+               </div>
+           </nav>
+           </div>
+           <div class="contmessages" onresize="arrumarAltura()" id="messages">
+               <div v-for="(item, index) in messages" :key="index" class="message">
+                   <div class="autor">{{ item.fromUsername }}</div>
+                   <div class="messagebody">{{ item.message }}</div>
+                   <hr class="sepadadormensagem">
+               </div>
+           </div>
+           <div class="escrever row">
+           <p class="digitando"> O corno está digitando </p>
+               <div class="col s11"> <textarea v-model="message" @keydown.enter.exact.prevent="sendMessage"
+                       class="textochat" id="textbox"></textarea></div>
+               <div class="col s1"><button @click="sendMessage"
+                       class="white-text waves-effect waves-teal btn-flat btnsend enviarmensagem" id="send"><i
+                           class="material-icons">send</i></button></div>
+           </div>
+       </div>
+   </div>`,
     props: {'me': String, 'myname': String},
     data: function(){
         return {
