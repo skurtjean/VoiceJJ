@@ -45,41 +45,6 @@ router.get('/addGroup', function(req, res){
         res.end();
     });
 });
-router.get('/getFriends', function(req, res){
-    me = req.query.me;
-    friends = [];
-    let cursor = req.app.locals.banco.collection('friends').aggregate([
-        { "$match": {"_id1": new ObjectId(me), "type": 1}},
-        {
-            "$lookup": {
-                "from": 'user',
-                "localField": '_id2',
-                "foreignField": "_id",
-                "as": 'user'
-            }
-        }
-    ]).forEach((results) =>{
-        let cursor2 = req.app.locals.banco.collection('friends').aggregate([
-            { $match: {"_id1": new ObjectId(results._id2), "_id2": new ObjectId(me), "type": 1}},
-            {
-                $lookup: {
-                    from: 'user',
-                    localField: '_id1',
-                    foreignField: "_id",
-                    as: 'user'
-                }
-            }
-        ]).forEach((resultsF) => {
-            friends.push(results);
-        });
-    });
-    setTimeout(function(){ res.json(friends) }, 500);
-});
-router.get('/getGroups', function(req, res){
-    me = req.query.me;
-    let cursor = req.app.locals.banco.collection('friends').find( {"_id1": new ObjectId(me), "type": 2}).toArray((err, results) => {
-        res.json(results);
-    });
-});
+
 
 module.exports = router

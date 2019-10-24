@@ -4,12 +4,13 @@ const ObjectID = require('mongodb').ObjectId
 const session = require('express-session')
 const { check, validationResult } = require('express-validator')
 const crypto            = require('crypto');
+const ObjectId = require('mongodb').ObjectId
 const validacoes = require('./validacoesController')
 
-router.get('/', function(req, res){
+router.get('/', async function(req, res){
     res.render('Principal.njk', {
         "me": req.session._id,
-        "myName": req.session.nome
+        "myName": req.session.nome,
     });
 });
 router.get('/login', function(req, res) { 
@@ -93,5 +94,42 @@ function itsWrong(req) {
     }
 
 }
+
+router.get('/getFriends', async function getFriends(req, res){
+    me = req.query.me;
+    friends = [];
+    let cursor = await req.app.locals.banco.collection('friends').aggregate([
+        { "$match": {"_id1": new ObjectId(me), "type": 1}},
+        {
+            "$lookup": {
+                "from": 'user',
+                "localField": '_id2',
+                "foreignField": "_id",
+                "as": 'user'
+            }
+        }
+    ]).forEach(async function(results) {
+        let cursor2 = await req.app.locals.banco.collection('friends').aggregate([
+            { $match: {"_id1": new ObjectId(results._id2), "_id2": new ObjectId(me), "type": 1}},
+            {
+                $lookup: {
+                    from: 'user',
+                    localField: '_id1',
+                    foreignField: "_id",
+                    as: 'user'
+                }
+            }
+        ]).forEach((resultsF) => {
+            friends.push(results);
+        });
+    });
+    setTimeout(function(){ res.json(friends) }, 500);
+});
+
+router.get('/getGroups', async function getGroups(req, res){
+    me = req.query.me;
+    result = await req.app.locals.banco.collection('friends').find( {"_id1": new ObjectId(me), "type": 2}).toArray();
+    res.json(result);
+});
 
 module.exports = router

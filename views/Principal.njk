@@ -43,7 +43,6 @@
   {% endblock %}
   {% block js %}
     <script>
-    function sleep(ms) {   return new Promise(resolve => setTimeout(resolve, ms)); }
     function arrumarAltura() {
       $(".contmessages").css('height','100vh').css('height','-=' +  ( $(".topside").height() + $(".escrever").height())  +'')
     }

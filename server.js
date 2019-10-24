@@ -29,7 +29,7 @@ const socket = require('./helpers/socket.js');
 const peer = require('./helpers/peer.js');
 
 
-app.use(express.static(__dirname + '/assets'));
+app.use(express.static(__dirname + '/public'));
 
 const stringDB = "mongodb://admin:VoiceJJ%40@vps13171.publiccloud.com.br/admin";
 const DB   = 'admin'
